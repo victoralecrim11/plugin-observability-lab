@@ -30,3 +30,9 @@ jobs:
         run: |
           node scripts/security-scan.mjs --path dist/antigravity/observability
           node scripts/validate-package.mjs --path dist/antigravity/observability
+      - name: Run generated Claude and Codex regression tests
+        working-directory: dist/claude-codex/observability
+        run: npm run check
+      - name: Run generated Antigravity regression tests
+        working-directory: dist/antigravity/observability
+        run: npm run check

@@ -1,9 +1,10 @@
 ---
 name: diagnosticar
 description: Investigar incidentes multi-camada e encaminhar ao especialista correto.
+user-invocable: false
 license: MIT
 metadata:
-  version: "0.4.1"
+  version: "0.5.0"
 ---
 
 

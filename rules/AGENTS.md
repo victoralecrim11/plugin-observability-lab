@@ -9,3 +9,5 @@
 - Falta de ferramenta/permissão implica documentação do bloqueio, nunca alegação de execução.
 
 Diretrizes textuais não substituem controles e permissões do ambiente.
+
+- Para tarefas de maior risco, carregue references/agentic-workflow.md; planejador e auditor têm responsabilidades separadas e evidência verificável.

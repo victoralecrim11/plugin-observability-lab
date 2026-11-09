@@ -3,7 +3,8 @@ name: monitoring-integrations
 description: Integra novas aplicações ao monitoramento existente por HTTP, Prometheus, Azure, Kubernetes, TLS, APIs e requisitos autorizados. Use para onboarding Aplicacao-Exemplo, integrações ou dependências externas.
 license: MIT
 metadata:
-  version: "0.4.1"
+  version: "0.5.0"
+user-invocable: false
 ---
 
 

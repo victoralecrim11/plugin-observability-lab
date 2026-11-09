@@ -1,9 +1,10 @@
 ---
 name: atualizar-template
 description: Analisar e alterar template Zabbix existente com comparação e rollback.
+user-invocable: false
 license: MIT
 metadata:
-  version: "0.4.1"
+  version: "0.5.0"
 ---
 
 

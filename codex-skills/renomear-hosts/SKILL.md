@@ -1,9 +1,10 @@
 ---
 name: renomear-hosts
 description: Gerar plano de alteração de visible name dos hosts Zabbix a partir de CSV/XLSX.
+user-invocable: false
 license: MIT
 metadata:
-  version: "0.4.1"
+  version: "0.5.0"
 ---
 
 

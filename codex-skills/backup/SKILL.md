@@ -1,9 +1,10 @@
 ---
 name: backup
 description: Exportar configuração de objetos monitorados sem alterar a infraestrutura.
+user-invocable: false
 license: MIT
 metadata:
-  version: "0.4.1"
+  version: "0.5.0"
 ---
 
 

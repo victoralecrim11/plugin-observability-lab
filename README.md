@@ -121,3 +121,9 @@ Para alterações maiores, use release:minor ou release:major. Revise o diff e p
 A leitura do estado atual é padrão. Qualquer alteração requer autorização específica, backup, diff, testes e plano de rollback. A descoberta de datasources deve validar IDs e UIDs: nunca presumir que a fonte padrão é adequada. Sem ferramentas ou permissões, declarar o bloqueio; não inventar resultados.
 
 Licença MIT.
+
+## Orquestração e proteção de invocação
+
+As quatro skills de domínio são conhecimento contextual, ocultado do menu Claude por user-invocable: false. Oito comandos com potencial de mudança exigem invocação explícita no Claude (disable-model-invocation: true). As 19 skills operacionais do Codex continuam geradas para preservar as operações, marcadas como não invocáveis manualmente quando o cliente suporta essa propriedade. Essa flag não substitui aprovação real de ferramentas.
+
+Cinco agentes têm prefixo observability- para evitar colisão com outros plugins. ROOT_ROUTED significa que Root coordena ferramentas; especialistas produzem análise ou CANONICAL OUTPUT; auditor verifica artefatos. Consulte docs/AGENTIC.md.

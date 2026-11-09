@@ -1,6 +1,7 @@
 ---
 description: Projetar ou ajustar monitoramento HTTP/HTTPS no Zabbix para serviços existentes.
 argument-hint: "<url|host|servico>"
+disable-model-invocation: true
 ---
 
 # /observability:monitorar-http

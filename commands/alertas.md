@@ -1,6 +1,7 @@
 ---
 description: Auditar e propor ajustes em triggers/alertas Zabbix e Grafana com thresholds homologados.
 argument-hint: "<aplicacao|host|regra>"
+disable-model-invocation: true
 ---
 
 # /observability:alertas

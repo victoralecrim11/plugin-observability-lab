@@ -1,6 +1,7 @@
 ---
 description: Gerar dashboard novo para Grafana 12.x usando datasources comprovados.
 argument-hint: "<aplicacao|objetivo>"
+disable-model-invocation: true
 ---
 
 # /observability:criar-dashboard

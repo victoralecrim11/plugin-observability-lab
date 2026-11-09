@@ -1,6 +1,7 @@
 ---
 description: Projetar template novo para Zabbix 7.4.x a partir de requisitos verificados.
 argument-hint: "<aplicacao|host|requisitos>"
+disable-model-invocation: true
 ---
 
 # /observability:criar-template

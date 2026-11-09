@@ -1,9 +1,10 @@
 ---
 name: criar-dashboard
 description: Gerar dashboard novo para Grafana 12.x usando datasources comprovados.
+user-invocable: false
 license: MIT
 metadata:
-  version: "0.4.1"
+  version: "0.5.0"
 ---
 
 

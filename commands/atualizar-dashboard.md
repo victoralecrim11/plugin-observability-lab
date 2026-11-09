@@ -1,6 +1,7 @@
 ---
 description: Modificar dashboard Grafana existente sem perder UIDs, variáveis ou dados.
 argument-hint: "<dashboard-uid|url|arquivo-json>"
+disable-model-invocation: true
 ---
 
 # /observability:atualizar-dashboard

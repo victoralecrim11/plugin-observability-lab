@@ -1,9 +1,10 @@
 ---
 name: atualizar-dashboard
 description: Modificar dashboard Grafana existente sem perder UIDs, variáveis ou dados.
+user-invocable: false
 license: MIT
 metadata:
-  version: "0.4.1"
+  version: "0.5.0"
 ---
 
 

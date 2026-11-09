@@ -3,7 +3,8 @@ name: observability-orchestrator
 description: Orquestra demandas de observabilidade de ponta a ponta, coordena Zabbix/Grafana/integrações e governa risco, evidências, testes e rollback. Use quando uma tarefa envolver mais de uma ferramenta ou mudança complexa.
 license: MIT
 metadata:
-  version: "0.4.1"
+  version: "0.5.0"
+user-invocable: false
 ---
 
 
@@ -37,3 +38,6 @@ QUALITY: [PASS|FAIL|BLOCKED|NOT EXECUTED]
 - Renomeação em lote: `zabbix-engineer`; preserve `hostid` e campo técnico `host`, atualize apenas `name` após autorização.
 
 Leia `references/security-policy.md`, `references/workflow-routing.md` e `references/validation-matrix.md` nesta skill antes de executar alterações.
+
+## Delegação verificável
+- Consulte references/agentic-workflow.md para ROOT_ROUTED, ownership, tool evidence, fallback e quality gate. Especialistas não aprovam sua própria execução.

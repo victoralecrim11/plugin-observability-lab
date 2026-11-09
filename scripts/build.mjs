@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Observability Dev Toolkit 0.4.0
+ * Observability Dev Toolkit - version derived from package.json
  * One canonical source, two releases:
  *  - claude-codex: identical plugin root and shared domain skills for both runtimes
  *  - antigravity: isolated native distribution
@@ -46,7 +46,8 @@ function buildCodexOperation(base,file,subdir='codex-skills') {
  const raw = fs.readFileSync(path.join(root,'workflows',file),'utf8');
  const workflow = parseWorkflow(raw,file);
  const body = workflow.body.replace(new RegExp(`^# \\/observability:${slug}$`,'m'),`# ${slug}`);
- const front = `---\nname: ${slug}\ndescription: ${workflow.description}\nlicense: MIT\nmetadata:\n  version: "${version}"\n---\n\n`;
+ const invocation = subdir==='codex-skills' ? 'user-invocable: false\n' : '';
+ const front = `---\nname: ${slug}\ndescription: ${workflow.description}\n${invocation}license: MIT\nmetadata:\n  version: "${version}"\n---\n\n`;
  const skillDir = path.join(base,subdir,slug);
  write(path.join(skillDir,'SKILL.md'),front+body+`\n## Documentação e segurança\n- Leia as instruções de governança em \`references/security-policy.md\` e \`references/operational-baseline.md\` neste diretório.\n- Para scripts offline, localize a pasta \`scripts/\` na raiz do plugin.\n`);
  for(const doc of ['security-policy','operational-baseline','workflow-routing']) {
@@ -102,7 +103,7 @@ function buildAntigravity(){
  for(const file of fs.readdirSync(path.join(base,'agents')).filter(x=>x.endsWith('.md'))) {
   const dst=path.join(base,'agents',file);
   let body=fs.readFileSync(dst,'utf8');
-  body=body.replace('model: inherit\n','model: inherit\nmainAgent: false\nsubagent: true\ncommandExecutionPolicy: off\ninheritMcp: false\ntools:\n  - view_file\n  - grep_search\n  - find_by_name\n  - send_message\n');
+  body=body.replace('model: inherit\n','model: inherit\nmainAgent: false\nsubagent: true\ncommandExecutionPolicy: off\ninheritMcp: false\n');
   write(dst,body);
  }
  write(path.join(base,'BUILD-INFO.json'),{platform,version,domainSkills:domainNames.length,operationalSkills:workflowNames.length,

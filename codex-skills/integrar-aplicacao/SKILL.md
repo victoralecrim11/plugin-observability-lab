@@ -1,9 +1,10 @@
 ---
 name: integrar-aplicacao
 description: Onboarding de nova aplicação ao monitoramento existente, sem refazer integração Zabbix/Grafana.
+user-invocable: false
 license: MIT
 metadata:
-  version: "0.4.1"
+  version: "0.5.0"
 ---
 
 

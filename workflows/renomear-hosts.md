@@ -1,6 +1,7 @@
 ---
 description: Gerar plano de alteração de visible name dos hosts Zabbix a partir de CSV/XLSX.
 argument-hint: "<planilha> [hostgroup]"
+disable-model-invocation: true
 ---
 
 # /observability:renomear-hosts

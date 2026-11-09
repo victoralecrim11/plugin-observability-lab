@@ -1,9 +1,10 @@
 ---
 name: auditar-grafana
 description: Auditar pastas, dashboards, queries, variáveis, alertas e performance do Grafana 12.x.
+user-invocable: false
 license: MIT
 metadata:
-  version: "0.4.1"
+  version: "0.5.0"
 ---
 
 

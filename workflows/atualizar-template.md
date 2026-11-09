@@ -1,6 +1,7 @@
 ---
 description: Analisar e alterar template Zabbix existente com comparação e rollback.
 argument-hint: "<nome-template|arquivo>"
+disable-model-invocation: true
 ---
 
 # /observability:atualizar-template

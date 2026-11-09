@@ -1,6 +1,7 @@
 ---
 description: Onboarding de nova aplicação ao monitoramento existente, sem refazer integração Zabbix/Grafana.
 argument-hint: "<aplicacao> [HMG|PRD]"
+disable-model-invocation: true
 ---
 
 # /observability:integrar-aplicacao

@@ -9,3 +9,6 @@
 - Falta de ferramenta/permissão implica documentação do bloqueio, nunca alegação de execução.
 
 Diretrizes textuais não substituem controles e permissões do ambiente.
+
+- Para tarefas STANDARD/COMPLEX, consulte references/agentic-workflow.md e use ROOT_ROUTED sem nested delegation obrigatória.
+- Especialistas não declararam execução se não houver tool evidence; o Root materializa apenas output canônico depois de autorização.

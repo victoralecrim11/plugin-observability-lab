@@ -1,9 +1,10 @@
 ---
 name: criar-template
 description: Projetar template novo para Zabbix 7.4.x a partir de requisitos verificados.
+user-invocable: false
 license: MIT
 metadata:
-  version: "0.4.1"
+  version: "0.5.0"
 ---
 
 

@@ -1,9 +1,10 @@
 ---
 name: validar
 description: Validar artefatos, referências e resultados de mudanças observáveis.
+user-invocable: false
 license: MIT
 metadata:
-  version: "0.4.1"
+  version: "0.5.0"
 ---
 
 

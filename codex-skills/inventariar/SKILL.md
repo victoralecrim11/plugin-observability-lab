@@ -1,9 +1,10 @@
 ---
 name: inventariar
 description: Levantar o mapa de hosts, templates, dashboards, plugins e fontes de dados sem alterações.
+user-invocable: false
 license: MIT
 metadata:
-  version: "0.4.1"
+  version: "0.5.0"
 ---
 
 

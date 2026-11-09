@@ -40,6 +40,20 @@ function check(){
   if(/Bearer\s+[a-z0-9_-]{25,}/i.test(t)||/\bsk-proj-[a-z0-9_-]{20,}/i.test(t))problems.push(`Possível credencial literal: ${file}`);
  }
  if(combined){
+  for(const n of ['observability-orchestrator','zabbix-engineer','grafana-engineer','monitoring-integrations']){
+    const p='skills/'+n+'/SKILL.md';
+    if(!exists(p)||fm(path.join(base,p))['user-invocable']!=='false')problems.push('Skill de conhecimento exposta no menu Claude: '+n);
+  }
+  for(const n of ['alertas','atualizar-dashboard','atualizar-template','criar-dashboard','criar-template','integrar-aplicacao','monitorar-http','renomear-hosts']){
+    const p='commands/'+n+'.md';
+    if(!exists(p)||fm(path.join(base,p))['disable-model-invocation']!=='true')problems.push('Comando de alteracao sem invocacao manual: '+n);
+  }
+  for(const p of codex){
+    if(fm(p)['user-invocable']!=='false')problems.push('Skill operacional Codex sem restricao de menu: '+p);
+  }
+  const expected=['observability-planner','observability-quality-auditor','observability-zabbix-specialist','observability-grafana-specialist','observability-integration-specialist'];
+  for(const n of expected)if(!exists('agents/'+n+'.md'))problems.push('Agente ausente: '+n);
+  if(!exists('references/agentic-workflow.md'))problems.push('Contrato ROOT_ROUTED ausente');
   const claude=json('.claude-plugin/plugin.json');const market=json('.claude-plugin/marketplace.json');const cx=json('.codex-plugin/plugin.json');const mcp=json('.mcp.json');
   if(claude?.name!==cx?.name||claude?.name!=='observability')problems.push('Identidade divergente Claude/Codex');
   if(claude?.version!==cx?.version||claude?.version!==info?.version)problems.push('Versões divergentes Claude/Codex/BUILD');
@@ -51,7 +65,21 @@ function check(){
   for(const f of commands){const slug=path.basename(f,'.md');if(!exists(`codex-skills/${slug}/SKILL.md`))problems.push(`Sem operação Codex correspondente a ${slug}`)}
   if(!exists('AGENTS.md'))problems.push('AGENTS.md compartilhado ausente');
  }
- if(anti){if(!exists('plugin.json')||!exists('mcp_config.json')||!exists('rules/AGENTS.md'))problems.push('Manifesto/regras Antigravity incompletos');}
+ if(anti){
+   for(const rel of ['plugin.json','mcp_config.json','rules/AGENTS.md','rules/security.md','rules/agentic-governance.md','references/agentic-workflow.md']){
+      if(!exists(rel))problems.push('Manifesto/regras/contrato Antigravity ausente: '+rel);
+   }
+   const required=['observability-planner','observability-quality-auditor','observability-zabbix-specialist','observability-grafana-specialist','observability-integration-specialist'];
+   const found=list(path.join(base,'agents')).filter(x=>x.endsWith('.md'));
+   eq(found.length,required.length,'agentes Antigravity');
+   for(const n of required){
+      const rel='agents/'+n+'.md';
+      if(!exists(rel)){problems.push('Agente Antigravity ausente: '+n);continue;}
+      const v=fm(path.join(base,rel));
+      if(v.name!==n||v.mainAgent!=='false'||v.subagent!=='true'||v.commandExecutionPolicy!=='off'||v.inheritMcp!=='false')problems.push('Metadata insegura/incompativel: '+rel);
+      if(Object.hasOwn(v,'tools'))problems.push('Lista de ferramentas Antigravity fixa: '+rel);
+   }
+ }
  if(!source&&!exists('scripts/audit-dashboard.mjs'))problems.push('Scripts offline incompletos');
  if(source&&!exists('scripts/build.mjs'))problems.push('Builder não localizado');
  const result={status:problems.length?'FAIL':'PASS',mode:source?'source':info?.platform||'unrecognized',base,skills:domain.length,operationalSkills:codex.length,commands:commands.length,workflows:workflows.length,problems};
