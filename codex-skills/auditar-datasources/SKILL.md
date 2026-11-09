@@ -3,7 +3,7 @@ name: auditar-datasources
 description: Revisar fontes de dados e identidade dos conectores existentes do Grafana.
 license: MIT
 metadata:
-  version: "0.4.0"
+  version: "0.4.1"
 ---
 
 

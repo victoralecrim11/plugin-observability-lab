@@ -1,0 +1,22 @@
+{
+  "name": "observability-codex-marketplace",
+  "interface": {
+    "displayName": "Observability Dev Toolkit"
+  },
+  "plugins": [
+    {
+      "name": "observability",
+      "version": "0.4.1",
+      "source": {
+        "source": "url",
+        "url": "https://github.com/victoralecrim11/plugin-observability-lab.git",
+        "ref": "main"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

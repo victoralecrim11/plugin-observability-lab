@@ -3,7 +3,7 @@ name: relatorio
 description: Documentar diagnóstico, alteração, rollback e evidências para chamado operacional.
 license: MIT
 metadata:
-  version: "0.4.0"
+  version: "0.4.1"
 ---
 
 

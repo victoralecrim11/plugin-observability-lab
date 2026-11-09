@@ -1,6 +1,6 @@
 {
   "name": "observability-dev-toolkit",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "type": "module",
   "description": "Toolkit de observabilidade para Claude Code e Codex",
@@ -10,9 +10,13 @@
   "scripts": {
     "validate": "node scripts/validate-package.mjs --path .",
     "test": "node --test tests/*.test.mjs",
-    "check": "npm run scan && npm run validate && npm test",
+    "check": "npm run scan && npm run verify:versions && npm run validate && npm test",
     "build": "node scripts/build.mjs",
-    "scan": "node scripts/security-scan.mjs"
+    "scan": "node scripts/security-scan.mjs",
+    "verify:versions": "node scripts/bump-version.mjs --check",
+    "release:patch": "node scripts/bump-version.mjs patch",
+    "release:minor": "node scripts/bump-version.mjs minor",
+    "release:major": "node scripts/bump-version.mjs major"
   },
   "license": "MIT"
 }

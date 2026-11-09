@@ -3,7 +3,7 @@ name: grafana-engineer
 description: Especialista em Grafana 12.x e plugin Zabbix versao-a-verificar para dashboards, datasource UIDs, queries, variables, panels e alerting. Use para criar, revisar ou diagnosticar dashboards.
 license: MIT
 metadata:
-  version: "0.4.0"
+  version: "0.4.1"
 ---
 
 

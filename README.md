@@ -1,41 +1,123 @@
 # Observability Dev Toolkit
 
-Plugin **unificado para Claude Code e Codex** voltado à engenharia de observabilidade com Zabbix, Grafana, Prometheus e integrações HTTP/Cloud. Todos os exemplos são genéricos; não há dados, hostnames, IPs ou credenciais corporativas neste repositório público.
+Plugin de engenharia de observabilidade para **Claude Code + Codex**, em um único repositório. Contém 19 procedimentos operacionais, 4 skills especializadas e 5 agentes declarativos para manutenção, auditoria e troubleshooting de Zabbix/Grafana, Prometheus e integrações.
 
-## Instalação no Claude Code
+> Os exemplos são genéricos e sintéticos. Não são distribuídas credenciais, endereços internos, configurações ou documentos de organizações.
 
-No Claude Code, execute:
+## Instalação rápida
+
+### Claude Code (CLI)
+
+No terminal do Claude Code, execute:
 
     /plugin marketplace add victoralecrim11/plugin-observability-lab
     /plugin install observability@observability-marketplace
+    /reload-plugins
 
-Para desenvolvimento local, use o diretório raiz com o comando: claude --plugin-dir .
+Depois, experimente:
 
-## Instalação no Codex
+    /observability:auditar-zabbix
+    /observability:diagnosticar-painel
+    /observability:conectar-ambiente
 
-O mesmo repositório disponibiliza o manifesto .codex-plugin/plugin.json, quatro skills de domínio em skills/ e dezenove skills operacionais em codex-skills/. Use o método de instalação suportado pela sua versão do Codex.
+O último comando **somente inspeciona** um ambiente existente. Não instala serviços e não recria integrações.
 
-## Funcionalidades
+### Codex (CLI e aplicativo)
 
-- 19 procedimentos operacionais: auditoria, diagnóstico, criação e atualização de templates, dashboards, HTTP e governança.
-- 4 skills especializadas e 5 agentes declarativos, com uso condicionado às capacidades do runtime.
-- Scripts Node.js para validação offline e planejamento de alteração de nomes com dry-run.
-- Fonte canônica em workflows/, gerando comandos Claude e skills Codex a partir dos mesmos procedimentos.
+No terminal do sistema (fora do prompt do Claude):
 
-## Desenvolvimento
+    codex plugin marketplace add victoralecrim11/plugin-observability-lab
+    codex plugin marketplace list
+    codex plugin add observability@observability-codex-marketplace
+
+Reinicie o Codex. Se preferir, abra o catálogo de plugins no aplicativo e instale **Observability Dev Toolkit** a partir do marketplace cadastrado. Os comandos de plugin do Claude e do Codex **não são intercambiáveis**.
+
+## Atualização após novos commits
+
+O plugin utiliza versões nos manifestos; o mantenedor deve publicar uma nova versão ao alterar os recursos distribuídos.
+
+### Claude Code
+
+No terminal do sistema:
+
+    claude plugin marketplace update observability-marketplace
+    claude plugin update observability@observability-marketplace
+
+Em uma sessão do Claude Code já aberta:
+
+    /reload-plugins
+
+### Codex
+
+No terminal do sistema:
+
+    codex plugin marketplace upgrade observability-codex-marketplace
+
+Atualize/reinstale o plugin pelo gerenciador de plugins quando necessário e reinicie o Codex para carregar a versão nova. Para instalações ainda não efetuadas:
+
+    codex plugin add observability@observability-codex-marketplace
+
+### Script de atualização
+
+A partir de um clone local do repositório:
+
+    # Windows PowerShell
+    powershell -ExecutionPolicy Bypass -File .\scripts\atualizar-plugin.ps1
+
+    # macOS / Linux / Git Bash
+    bash ./scripts/atualizar-plugin.sh
+
+Esses scripts atualizam os marketplaces configurados e o plugin Claude; não removem caches nem desinstalam plugins. Se um cliente não estiver instalado, será informado.
+
+## Instalação alternativa e desenvolvimento local
+
+    git clone https://github.com/victoralecrim11/plugin-observability-lab.git
+    cd plugin-observability-lab
+    npm run check
+    claude --plugin-dir .
+
+Para Codex, o mesmo clone possui o manifesto de compatibilidade em .codex-plugin/plugin.json e o catálogo .agents/plugins/marketplace.json. Verifique no catálogo do aplicativo ou com a CLI da versão instalada.
+
+Na interface Claude Desktop, abra **+ → Plugins → Add plugin** para acessar marketplaces já configurados (quando disponível). No Claude Code, use **/plugin → Errors** para diagnosticar problemas de instalação.
+
+## Comandos e capacidades
+
+| Área | Exemplos |
+| --- | --- |
+| Descoberta | conectar-ambiente, inventariar |
+| Auditoria | auditar-zabbix, auditar-grafana, auditar-datasources |
+| Diagnóstico | diagnosticar, diagnosticar-coleta, diagnosticar-painel |
+| Configuração | criar-template, atualizar-template, monitorar-http |
+| Dashboards | criar-dashboard, atualizar-dashboard |
+| Operações | integrar-aplicacao, renomear-hosts, alertas |
+| Governança | backup, validar, relatorio |
+
+No Claude Code, as operações usam o prefixo de namespace "/observability:". O Codex as disponibiliza como skills em codex-skills/ e skills/.
+
+## Desenvolvendo e publicando uma alteração
 
 Requer Node.js 20+.
 
     npm run check
     npm run build
 
-A validação também ocorre no GitHub Actions. O build gera artefatos em dist/ e nunca altera sistemas remotos.
+Edite procedimentos em workflows/, que é a fonte canônica. Antes de publicar uma nova versão, execute o comando de release, que sincroniza automaticamente os manifestos, marketplaces e metadados:
+
+    npm run release:patch
+    npm run check
+    npm run build
+
+Para alterações maiores, use release:minor ou release:major. Revise o diff e publique no GitHub normalmente; o CI testa estrutura, integridade e exemplos offline. Nenhum teste local autoriza escrita em produção.
+
+## Documentação
+
+- [Guia completo de instalação, atualização e remoção](docs/INSTALL.md)
+- [Arquitetura dos componentes](docs/ARCHITECTURE.md)
+- [Política de segurança](references/security-policy.md)
+- [GitHub Actions](.github/workflows/ci.yml)
 
 ## Segurança
 
-- O comando conectar-ambiente é uma inspeção somente leitura; não instala nem recria integrações.
-- Toda alteração exige autorização explícita, backup, diff, testes e rollback.
-- Não presuma fonte de dados padrão; identifique o UID correto no painel.
-- Nunca inclua tokens, e-mails, hosts ou informações confidenciais no GitHub.
+A leitura do estado atual é padrão. Qualquer alteração requer autorização específica, backup, diff, testes e plano de rollback. A descoberta de datasources deve validar IDs e UIDs: nunca presumir que a fonte padrão é adequada. Sem ferramentas ou permissões, declarar o bloqueio; não inventar resultados.
 
-Leia docs/INSTALL.md, docs/ARCHITECTURE.md e references/security-policy.md. Licença MIT.
+Licença MIT.

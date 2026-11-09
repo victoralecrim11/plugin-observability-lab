@@ -3,7 +3,7 @@ name: diagnosticar-coleta
 description: Investigar dados ausentes entre host, item, API HTTP, proxy, trigger e armazenamento.
 license: MIT
 metadata:
-  version: "0.4.0"
+  version: "0.4.1"
 ---
 
 

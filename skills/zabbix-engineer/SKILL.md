@@ -3,7 +3,7 @@ name: zabbix-engineer
 description: Especialista em Zabbix 7.4.x para templates, hosts, visible name, triggers, LLD, macros, HTTP agent, web scenarios e API. Use ao auditar, criar, alterar ou solucionar problemas no Zabbix.
 license: MIT
 metadata:
-  version: "0.4.0"
+  version: "0.4.1"
 ---
 
 

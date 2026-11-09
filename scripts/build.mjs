@@ -11,7 +11,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
-const version = '0.4.0';
+const version = JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8')).version;
 const pluginName = 'observability';
 const workflowNames = fs.readdirSync(path.join(root,'workflows')).filter(x => x.endsWith('.md')).sort();
 const domainNames = fs.readdirSync(path.join(root,'skills')).filter(x => fs.statSync(path.join(root,'skills',x)).isDirectory()).sort();
@@ -58,6 +58,7 @@ function buildUnified() {
  const base = path.join(dist,platform,pluginName);
  fs.rmSync(base,{recursive:true,force:true}); fs.mkdirSync(base,{recursive:true});
  common(base);
+ cp(path.join(root,'.agents','plugins','marketplace.json'),path.join(base,'.agents','plugins','marketplace.json'));
  for(const file of workflowNames) {
    cp(path.join(root,'workflows',file),path.join(base,'commands',file));
    buildCodexOperation(base,file);
