@@ -1,0 +1,113 @@
+#!/usr/bin/env node
+/**
+ * Observability Dev Toolkit 0.4.0
+ * One canonical source, two releases:
+ *  - claude-codex: identical plugin root and shared domain skills for both runtimes
+ *  - antigravity: isolated native distribution
+ * Workflow markdown is the source of truth for Claude commands and Codex operational skills.
+ */
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const dist = path.join(root, 'dist');
+const version = '0.4.0';
+const pluginName = 'observability';
+const workflowNames = fs.readdirSync(path.join(root,'workflows')).filter(x => x.endsWith('.md')).sort();
+const domainNames = fs.readdirSync(path.join(root,'skills')).filter(x => fs.statSync(path.join(root,'skills',x)).isDirectory()).sort();
+const description = 'Sustentação e engenharia de observabilidade para Zabbix 7.4.x, Grafana 12.x e integrações, priorizando auditoria e mudanças autorizadas.';
+const author = {name:'Victor Alecrim',url:'https://github.com/victoralecrim11'};
+const keywords = ['zabbix','grafana','observability','monitoring','prometheus','azure','sre'];
+const cp = (from, to) => { fs.mkdirSync(path.dirname(to),{recursive:true}); fs.cpSync(from,to,{recursive:true}); };
+const write = (to, content) => { fs.mkdirSync(path.dirname(to),{recursive:true}); fs.writeFileSync(to,typeof content==='string'?content:JSON.stringify(content,null,2)+'\n','utf8'); };
+function parseWorkflow(markdown, name) {
+ const m = markdown.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n([\s\S]*)$/);
+ if(!m) throw new Error(`Frontmatter inválido: ${name}`);
+ const desc = m[1].match(/^description:\s*(.+)$/m)?.[1];
+ if(!desc) throw new Error(`description ausente: ${name}`);
+ return {description:desc,body:m[2]};
+}
+function common(base) {
+ for(const dir of ['references','config','scripts','docs','tests','agents']) cp(path.join(root,dir),path.join(base,dir));
+ for(const file of ['LICENSE','README.md']) cp(path.join(root,file),path.join(base,file));
+ const pkg = JSON.parse(fs.readFileSync(path.join(root,'package.json'),'utf8'));
+ pkg.scripts = {
+   scan:'node scripts/security-scan.mjs',
+   validate:'node scripts/validate-package.mjs --path .',
+   test:'node --test tests/*.test.mjs',
+   check:'npm run scan && npm run validate && npm test'
+ };
+ write(path.join(base,'package.json'),pkg);
+ write(path.join(base,'.mcp.json'),{mcpServers:{}});
+ for(const name of domainNames) cp(path.join(root,'skills',name),path.join(base,'skills',name));
+}
+function buildCodexOperation(base,file,subdir='codex-skills') {
+ const slug = file.replace(/\.md$/,'');
+ const raw = fs.readFileSync(path.join(root,'workflows',file),'utf8');
+ const workflow = parseWorkflow(raw,file);
+ const body = workflow.body.replace(new RegExp(`^# \\/observability:${slug}$`,'m'),`# ${slug}`);
+ const front = `---\nname: ${slug}\ndescription: ${workflow.description}\nlicense: MIT\nmetadata:\n  version: "${version}"\n---\n\n`;
+ const skillDir = path.join(base,subdir,slug);
+ write(path.join(skillDir,'SKILL.md'),front+body+`\n## Documentação e segurança\n- Leia as instruções de governança em \`references/security-policy.md\` e \`references/operational-baseline.md\` neste diretório.\n- Para scripts offline, localize a pasta \`scripts/\` na raiz do plugin.\n`);
+ for(const doc of ['security-policy','operational-baseline','workflow-routing']) {
+   cp(path.join(root,'references',`${doc}.md`),path.join(skillDir,'references',`${doc}.md`));
+ }
+}
+function buildUnified() {
+ const platform = 'claude-codex';
+ const base = path.join(dist,platform,pluginName);
+ fs.rmSync(base,{recursive:true,force:true}); fs.mkdirSync(base,{recursive:true});
+ common(base);
+ for(const file of workflowNames) {
+   cp(path.join(root,'workflows',file),path.join(base,'commands',file));
+   buildCodexOperation(base,file);
+ }
+ cp(path.join(root,'rules','AGENTS.md'),path.join(base,'AGENTS.md'));
+ const manifest = {name:pluginName,displayName:'Observability Dev Toolkit',description,version,author,license:'MIT',keywords};
+ write(path.join(base,'.claude-plugin','plugin.json'),manifest);
+ write(path.join(base,'.claude-plugin','marketplace.json'),{
+  name:'observability-marketplace',version,description:'Marketplace local do Observability Dev Toolkit.',owner:author,
+  plugins:[{
+   name:pluginName,displayName:'Observability Dev Toolkit',source:'./',description,version,author,license:'MIT',category:'development',keywords,
+   skills:['./skills/'],commands:['./commands/'],
+   agents:fs.readdirSync(path.join(root,'agents')).filter(x=>x.endsWith('.md')).sort().map(x=>`./agents/${x}`),
+   strict:true
+  }]
+ });
+ write(path.join(base,'.codex-plugin','plugin.json'),{
+  name:pluginName,version,description,author:{name:author.name},license:'MIT',keywords,
+  skills:['./skills/','./codex-skills/'],mcpServers:'./.mcp.json',
+  interface:{displayName:'Observability Dev Toolkit',shortDescription:'Audite e planeje Zabbix e Grafana com segurança.',
+   longDescription:'Plugin integrado de observabilidade: auditoria, diagnóstico, dashboards, templates e integrações sem escrita automática em produção.',
+   developerName:author.name,category:'Developer Tools',capabilities:['Read','Write'],
+   defaultPrompt:['Audite este dashboard Grafana sem alterar o ambiente.','Planeje a integração HTTP de uma aplicação em homologação.','Crie um dry-run de renomeação de hosts Zabbix.']}
+ });
+ write(path.join(base,'BUILD-INFO.json'),{
+  platform,version,domainSkills:domainNames.length,commands:workflowNames.length,codexOperationalSkills:workflowNames.length,
+  runtime:['claude-code','codex'],sourceOfTruth:'workflows/',mode:'offline',remoteWrites:0
+ });
+ return {platform,path:base,skillsShared:domainNames.length,commandsClaude:workflowNames.length,skillsCodex:domainNames.length+workflowNames.length};
+}
+function buildAntigravity(){
+ const platform='antigravity';const base=path.join(dist,platform,pluginName);
+ fs.rmSync(base,{recursive:true,force:true});fs.mkdirSync(base,{recursive:true});
+ common(base);
+ for(const f of workflowNames)buildCodexOperation(base,f,'skills');
+ cp(path.join(root,'rules'),path.join(base,'rules'));
+ write(path.join(base,'plugin.json'),{name:pluginName,version,displayName:'Observability Dev Toolkit',description,author,license:'MIT',keywords,
+  suggestedPrompts:['Audite o Zabbix sem modificar produção','Diagnostique um painel Grafana sem dados','Planeje o monitoramento HTTP de nova aplicação']
+ });
+ write(path.join(base,'mcp_config.json'),{mcpServers:{}});
+ for(const file of fs.readdirSync(path.join(base,'agents')).filter(x=>x.endsWith('.md'))) {
+  const dst=path.join(base,'agents',file);
+  let body=fs.readFileSync(dst,'utf8');
+  body=body.replace('model: inherit\n','model: inherit\nmainAgent: false\nsubagent: true\ncommandExecutionPolicy: off\ninheritMcp: false\ntools:\n  - view_file\n  - grep_search\n  - find_by_name\n  - send_message\n');
+  write(dst,body);
+ }
+ write(path.join(base,'BUILD-INFO.json'),{platform,version,domainSkills:domainNames.length,operationalSkills:workflowNames.length,
+  sourceOfTruth:'workflows/',mode:'offline',remoteWrites:0});
+ return {platform,path:base,skills:domainNames.length+workflowNames.length};
+}
+fs.mkdirSync(dist,{recursive:true});
+console.log(JSON.stringify(buildUnified()));
+console.log(JSON.stringify(buildAntigravity()));

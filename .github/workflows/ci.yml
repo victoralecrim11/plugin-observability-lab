@@ -1,0 +1,32 @@
+name: CI - Claude Code and Codex
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  offline-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Security scan and offline tests
+        run: npm run check
+      - name: Generate release distributions
+        run: npm run build
+      - name: Validate generated Claude/Codex package
+        run: |
+          node scripts/security-scan.mjs --path dist/claude-codex/observability
+          node scripts/validate-package.mjs --path dist/claude-codex/observability
+      - name: Validate generated adapter package
+        run: |
+          node scripts/security-scan.mjs --path dist/antigravity/observability
+          node scripts/validate-package.mjs --path dist/antigravity/observability
