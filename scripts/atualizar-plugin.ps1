@@ -25,7 +25,7 @@ if ($SomenteClaude -and $SomenteCodex) {
 $falhas = New-Object System.Collections.Generic.List[string]
 $executados = 0
 $claude = 'observability@observability-marketplace'
-$codex = 'observability-codex-marketplace'
+$codex = 'observability-marketplace'
 
 if (-not $SomenteCodex) {
   if (Get-Command claude -ErrorAction SilentlyContinue) {

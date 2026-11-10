@@ -1,6 +1,6 @@
 {
   "platform": "claude-codex",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "domainSkills": 4,
   "commands": 19,
   "codexOperationalSkills": 19,

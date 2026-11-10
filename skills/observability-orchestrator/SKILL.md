@@ -3,7 +3,7 @@ name: observability-orchestrator
 description: Orquestra demandas de observabilidade de ponta a ponta, coordena Zabbix/Grafana/integrações e governa risco, evidências, testes e rollback. Use quando uma tarefa envolver mais de uma ferramenta ou mudança complexa.
 license: MIT
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
 user-invocable: false
 ---
 

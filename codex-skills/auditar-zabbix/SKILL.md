@@ -4,7 +4,7 @@ description: Auditar configuração, coleta e alertas do Zabbix 7.4.x em modo le
 user-invocable: false
 license: MIT
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
 ---
 
 

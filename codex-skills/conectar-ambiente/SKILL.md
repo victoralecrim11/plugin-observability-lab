@@ -4,7 +4,7 @@ description: Descobrir e testar, em leitura, as conexões já existentes; não i
 user-invocable: false
 license: MIT
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
 ---
 
 

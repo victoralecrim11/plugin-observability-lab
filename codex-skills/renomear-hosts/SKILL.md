@@ -4,7 +4,7 @@ description: Gerar plano de alteração de visible name dos hosts Zabbix a parti
 user-invocable: false
 license: MIT
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
 ---
 
 

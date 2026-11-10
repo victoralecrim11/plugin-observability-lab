@@ -36,7 +36,7 @@ if [[ "$target" != "claude" ]]; then
   if command -v codex >/dev/null 2>&1; then
     done_count=$((done_count+1))
     echo "== Codex: atualizando catálogo"
-    codex plugin marketplace upgrade observability-codex-marketplace || errors=$((errors+1))
+    codex plugin marketplace upgrade observability-marketplace || errors=$((errors+1))
     echo "Confira o plugin no gerenciador e reinicie o Codex."
   else
     echo "Aviso: CLI codex não encontrada; ignorada."

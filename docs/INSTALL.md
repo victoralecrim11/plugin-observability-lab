@@ -47,7 +47,7 @@ No terminal do sistema:
 
     codex plugin marketplace add victoralecrim11/plugin-observability-lab
     codex plugin marketplace list
-    codex plugin add observability@observability-codex-marketplace
+    codex plugin add observability@observability-marketplace
 
 No Codex, também é possível abrir /plugins ou o gerenciador de plugins da interface disponível e instalar o plugin publicado por esse marketplace. Inicie uma sessão nova após a instalação.
 
@@ -58,6 +58,8 @@ Para desenvolvimento local, clone o repositório. O marketplace na raiz pode ser
 Nesse caso, execute o comando a partir do diretório-pai. A origem local e a origem Git podem ter o mesmo nome de marketplace; evite registrar ambas ao mesmo tempo se causarem colisão.
 
 As 4 skills de domínio vivem em skills/ e as 19 operacionais, em codex-skills/. Não espere que os slash commands Claude funcionem com o mesmo namespace no Codex.
+
+> **Mesmo nome para os dois clientes:** Claude Code e Codex cadastram o catálogo como observability-marketplace, mas mantêm registros independentes. Se o Codex foi cadastrado antes da padronização, basta atualizar o marketplace existente; não crie um segundo catálogo com outro nome.
 
 ## 3. Atualização de uma instalação existente
 
@@ -70,7 +72,7 @@ Abra uma nova sessão ou execute /reload-plugins na sessão atual.
 
 **Codex:**
 
-    codex plugin marketplace upgrade observability-codex-marketplace
+    codex plugin marketplace upgrade observability-marketplace
 
 O upgrade atualiza a origem do catálogo. Se o plugin instalado permanecer antigo, atualize-o no gerenciador do aplicativo; conforme o cliente, pode ser necessário remover a instalação anterior e instalar a nova versão. Reinicie o Codex.
 
@@ -98,12 +100,12 @@ Ou, pelo terminal:
 
 Codex, no terminal:
 
-    codex plugin remove observability@observability-codex-marketplace
+    codex plugin remove observability@observability-marketplace
 
 Opcionalmente, remova o marketplace depois de desinstalar o plugin:
 
     claude plugin marketplace remove observability-marketplace
-    codex plugin marketplace remove observability-codex-marketplace
+    codex plugin marketplace remove observability-marketplace
 
 Remover o marketplace não remove dados de monitoramento: os scripts deste projeto não possuem ferramentas de escrita remota por padrão.
 

@@ -1,6 +1,6 @@
 {
   "name": "observability",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Sustentação e engenharia de observabilidade para Zabbix 7.4.x, Grafana 12.x e integrações, priorizando auditoria e mudanças autorizadas.",
   "author": {
     "name": "Victor Alecrim"

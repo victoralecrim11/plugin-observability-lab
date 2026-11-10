@@ -4,7 +4,7 @@ description: Exportar configuração de objetos monitorados sem alterar a infrae
 user-invocable: false
 license: MIT
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
 ---
 
 

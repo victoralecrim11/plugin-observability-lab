@@ -4,7 +4,7 @@ description: Modificar dashboard Grafana existente sem perder UIDs, variáveis o
 user-invocable: false
 license: MIT
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
 ---
 
 

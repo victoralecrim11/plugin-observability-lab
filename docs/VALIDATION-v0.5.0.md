@@ -32,3 +32,7 @@ Data: 2026-11-09. Escopo: artefatos **sintéticos/offline**. Nenhuma operação 
 A execução headless do Root respondeu que iniciara um subagente de planejamento e identificou sua conversa, mas a resposta foi encerrada antes de chegar o DELEGATION PLAN. Portanto, a **delegação ponta a ponta permanece parcial**; revisar no cliente interativo com o painel de agentes antes de declarar homologação.
 
 Os testes são estáticos/offline e não representam autorização nem execução de escrita em Zabbix, Grafana ou qualquer sistema externo.
+
+## Erratum após publicação
+
+A validação do clone Antigravity publicado na versão 0.5.0 revelou duas regras nomeadas sem YAML frontmatter trigger. A checagem anterior da distribuição não havia identificado a falha. Não trate a versão 0.5.0 como plenamente válida no Antigravity. O defeito foi corrigido no gerador, nos arquivos-fonte e no validador a partir da versão de correção 0.5.1.

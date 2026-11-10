@@ -4,7 +4,7 @@ description: Investigar incidentes multi-camada e encaminhar ao especialista cor
 user-invocable: false
 license: MIT
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
 ---
 
 

@@ -4,7 +4,7 @@ description: Auditar pastas, dashboards, queries, variáveis, alertas e performa
 user-invocable: false
 license: MIT
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
 ---
 
 

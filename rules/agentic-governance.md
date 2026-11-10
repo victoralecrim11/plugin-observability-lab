@@ -1,3 +1,8 @@
+---
+trigger: always_on
+description: Governança de delegação ROOT_ROUTED, aprovações e verificação independente de evidências.
+---
+
 # Orquestração ROOT_ROUTED — Observability
 
 O Root é o Runtime Delegator e guarda Workflow State. O planner produz apenas plano; especialistas produzem conteúdo técnico; o quality auditor avalia evidências independentes.

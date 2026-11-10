@@ -58,6 +58,10 @@ function check(){
   if(claude?.name!==cx?.name||claude?.name!=='observability')problems.push('Identidade divergente Claude/Codex');
   if(claude?.version!==cx?.version||claude?.version!==info?.version)problems.push('Versões divergentes Claude/Codex/BUILD');
   if(market?.plugins?.[0]?.name!==claude?.name)problems.push('Marketplace Claude com nome incompatível');
+  const codexMarket=json('.agents/plugins/marketplace.json');
+  if(market?.name!=='observability-marketplace'||codexMarket?.name!==market?.name)problems.push('Nomes de marketplaces Claude e Codex divergentes; atualizar um marketplace existente falha');
+  if(codexMarket?.plugins?.[0]?.name!==claude?.name)problems.push('Plugin no marketplace Codex com identidade divergente');
+  if(codexMarket?.plugins?.[0]?.version!==cx?.version)problems.push('Versao do marketplace Codex divergente do manifesto');
   if(mcp?.mcpServers&&Object.keys(mcp.mcpServers).length!==0)problems.push('A distribuição não pode vir com MCP corporativo pré-configurado');
   const skillPaths=Array.isArray(cx?.skills)?cx.skills:[cx?.skills];
   if(!skillPaths.includes('./skills/')||!skillPaths.includes('./codex-skills/'))problems.push('Codex não declarou os dois diretórios de skills');
@@ -66,8 +70,12 @@ function check(){
   if(!exists('AGENTS.md'))problems.push('AGENTS.md compartilhado ausente');
  }
  if(anti){
+   if(exists('.mcp.json'))problems.push('Arquivo Claude .mcp.json nao deve existir no pacote Antigravity');
    for(const rel of ['plugin.json','mcp_config.json','rules/AGENTS.md','rules/security.md','rules/agentic-governance.md','references/agentic-workflow.md']){
       if(!exists(rel))problems.push('Manifesto/regras/contrato Antigravity ausente: '+rel);
+   }
+   for(const rel of ['rules/security.md','rules/agentic-governance.md']){
+      if(exists(rel)&&!/^---\r?\n[\s\S]*?^trigger:\s*(?:always_on|model_decision|glob|manual)\s*$/m.test(read(rel)))problems.push('Regra Antigravity sem trigger valido: '+rel);
    }
    const required=['observability-planner','observability-quality-auditor','observability-zabbix-specialist','observability-grafana-specialist','observability-integration-specialist'];
    const found=list(path.join(base,'agents')).filter(x=>x.endsWith('.md'));

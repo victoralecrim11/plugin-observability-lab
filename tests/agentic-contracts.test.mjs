@@ -63,8 +63,26 @@ test('skills operacionais do Antigravity permanecem acionaveis por intencao',()=
  const front=fm('skills/diagnosticar/SKILL.md');
  assert.doesNotMatch(front,/^user-invocable:\s*false$/m);
 });
-test('guardrails nativos para Antigravity e arquivos compartilhados',()=>{
+test('guardrails nativos possuem trigger valido e nao sao ignorados pelo Antigravity',()=>{
+ for(const filename of ['rules/security.md','rules/agentic-governance.md']){
+  if(!fs.existsSync(p(filename))){if(isAnti)assert.fail('Regra ausente: '+filename);continue;}
+  assert.match(fm(filename),/^trigger:\s*(?:always_on|model_decision|glob|manual)$/m,filename);
+ }
+});
+
+test('pacote Antigravity nao herda arquivo MCP exclusivo Claude',()=>{
  if(!isAnti)return;
- assert.ok(fs.existsSync(p('rules/security.md')));
- assert.ok(fs.existsSync(p('rules/agentic-governance.md')));
+ assert.equal(fs.existsSync(p('.mcp.json')),false);
+ assert.equal(fs.existsSync(p('mcp_config.json')),true);
+});
+
+test('marketplace Codex mantém nome estável para atualização do cadastro existente',()=>{
+ if(isAnti)return;
+ const claude=JSON.parse(read('.claude-plugin/marketplace.json'));
+ const codex=JSON.parse(read('.agents/plugins/marketplace.json'));
+ const plugin=JSON.parse(read('.codex-plugin/plugin.json'));
+ assert.equal(claude.name,'observability-marketplace');
+ assert.equal(codex.name,claude.name);
+ assert.equal(codex.plugins[0].name,'observability');
+ assert.equal(codex.plugins[0].version,plugin.version);
 });

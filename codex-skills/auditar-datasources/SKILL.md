@@ -4,7 +4,7 @@ description: Revisar fontes de dados e identidade dos conectores existentes do G
 user-invocable: false
 license: MIT
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
 ---
 
 

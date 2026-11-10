@@ -94,6 +94,7 @@ function buildAntigravity(){
  const platform='antigravity';const base=path.join(dist,platform,pluginName);
  fs.rmSync(base,{recursive:true,force:true});fs.mkdirSync(base,{recursive:true});
  common(base);
+ fs.rmSync(path.join(base,'.mcp.json'),{force:true}); // Claude-only config must not ship in Antigravity
  for(const f of workflowNames)buildCodexOperation(base,f,'skills');
  cp(path.join(root,'rules'),path.join(base,'rules'));
  write(path.join(base,'plugin.json'),{name:pluginName,version,displayName:'Observability Dev Toolkit',description,author,license:'MIT',keywords,

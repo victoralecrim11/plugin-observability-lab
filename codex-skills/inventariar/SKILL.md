@@ -4,7 +4,7 @@ description: Levantar o mapa de hosts, templates, dashboards, plugins e fontes d
 user-invocable: false
 license: MIT
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
 ---
 
 

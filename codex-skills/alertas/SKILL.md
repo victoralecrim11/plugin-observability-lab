@@ -4,7 +4,7 @@ description: Auditar e propor ajustes em triggers/alertas Zabbix e Grafana com t
 user-invocable: false
 license: MIT
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
 ---
 
 

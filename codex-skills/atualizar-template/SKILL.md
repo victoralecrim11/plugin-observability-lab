@@ -4,7 +4,7 @@ description: Analisar e alterar template Zabbix existente com comparação e rol
 user-invocable: false
 license: MIT
 metadata:
-  version: "0.5.0"
+  version: "0.5.1"
 ---
 
 

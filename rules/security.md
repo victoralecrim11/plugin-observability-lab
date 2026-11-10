@@ -1,3 +1,8 @@
+---
+trigger: always_on
+description: Proteções de segurança para operações de monitoramento e mudanças autorizadas.
+---
+
 # Regras de segurança operacional — Observability
 
 Read-first. Nenhuma operação de escrita em sistemas externos sem autorização específica, objetos e IDs identificados, backup, diff, teste e rollback.

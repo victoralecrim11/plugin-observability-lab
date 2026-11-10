@@ -28,7 +28,7 @@ No terminal do sistema (fora do prompt do Claude):
 
     codex plugin marketplace add victoralecrim11/plugin-observability-lab
     codex plugin marketplace list
-    codex plugin add observability@observability-codex-marketplace
+    codex plugin add observability@observability-marketplace
 
 Reinicie o Codex. Se preferir, abra o catálogo de plugins no aplicativo e instale **Observability Dev Toolkit** a partir do marketplace cadastrado. Os comandos de plugin do Claude e do Codex **não são intercambiáveis**.
 
@@ -51,11 +51,11 @@ Em uma sessão do Claude Code já aberta:
 
 No terminal do sistema:
 
-    codex plugin marketplace upgrade observability-codex-marketplace
+    codex plugin marketplace upgrade observability-marketplace
 
 Atualize/reinstale o plugin pelo gerenciador de plugins quando necessário e reinicie o Codex para carregar a versão nova. Para instalações ainda não efetuadas:
 
-    codex plugin add observability@observability-codex-marketplace
+    codex plugin add observability@observability-marketplace
 
 ### Script de atualização
 
