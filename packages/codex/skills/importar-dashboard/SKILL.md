@@ -3,7 +3,7 @@ name: importar-dashboard
 description: Importar um dashboard JSON no Grafana com mapeamento de datasources, revisão de colisões, autorização e verificação do UID.
 license: MIT
 metadata:
-  version: "0.8.0"
+  version: "0.9.0"
 ---
 
 # /observability:importar-dashboard

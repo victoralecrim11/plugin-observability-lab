@@ -3,7 +3,7 @@ name: monitorar-http
 description: Projetar ou ajustar monitoramento HTTP/HTTPS no Zabbix para serviços existentes.
 license: MIT
 metadata:
-  version: "0.8.0"
+  version: "0.9.0"
 ---
 
 # /observability:monitorar-http

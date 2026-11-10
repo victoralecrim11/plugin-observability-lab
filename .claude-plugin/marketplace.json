@@ -1,6 +1,6 @@
 {
   "name": "observability-marketplace",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Marketplace local do Observability Dev Toolkit.",
   "owner": {
     "name": "Victor Alecrim",
@@ -12,7 +12,7 @@
       "displayName": "Observability Dev Toolkit",
       "source": "./",
       "description": "Sustentação e engenharia de observabilidade para Zabbix 7.4.x, Grafana 12.x e integrações, priorizando auditoria e mudanças autorizadas.",
-      "version": "0.8.0",
+      "version": "0.9.0",
       "author": {
         "name": "Victor Alecrim",
         "url": "https://github.com/victoralecrim11"

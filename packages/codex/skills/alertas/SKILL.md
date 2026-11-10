@@ -3,7 +3,7 @@ name: alertas
 description: Auditar e propor ajustes em triggers/alertas Zabbix e Grafana com thresholds homologados.
 license: MIT
 metadata:
-  version: "0.8.0"
+  version: "0.9.0"
 ---
 
 # /observability:alertas

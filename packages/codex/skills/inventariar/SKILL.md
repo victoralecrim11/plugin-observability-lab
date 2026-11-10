@@ -3,7 +3,7 @@ name: inventariar
 description: Levantar o mapa de hosts, templates, dashboards, plugins e fontes de dados sem alterações.
 license: MIT
 metadata:
-  version: "0.8.0"
+  version: "0.9.0"
 ---
 
 # /observability:inventariar

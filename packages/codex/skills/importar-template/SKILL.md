@@ -3,7 +3,7 @@ name: importar-template
 description: Importar um template personalizado YAML, JSON ou XML no Zabbix com revisão, autorização e verificação no destino.
 license: MIT
 metadata:
-  version: "0.8.0"
+  version: "0.9.0"
 ---
 
 # /observability:importar-template

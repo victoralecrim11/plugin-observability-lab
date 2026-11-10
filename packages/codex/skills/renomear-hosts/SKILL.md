@@ -3,7 +3,7 @@ name: renomear-hosts
 description: Gerar plano de alteração de visible name dos hosts Zabbix a partir de CSV/XLSX.
 license: MIT
 metadata:
-  version: "0.8.0"
+  version: "0.9.0"
 ---
 
 # /observability:renomear-hosts

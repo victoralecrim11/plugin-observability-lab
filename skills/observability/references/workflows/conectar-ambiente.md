@@ -39,3 +39,9 @@ Entregue inventário de conexões, versões observadas, permissões, bloqueios, 
 
 ## MCP e autenticação persistente
 Consulte `references/mcp-connections.md` na raiz do plugin. Priorize `connection_status`, depois leitura autenticada de templates Zabbix ou search/dashboard Grafana. Status e endpoints públicos não comprovam autenticação. Se não configurado, oriente o assistente local `scripts/configurar-conexoes.ps1`; não peça tokens no chat. Falta de MCP disponível não deve ser interpretada como credencial inválida. Reutilize API antes do navegador quando cobrir a operação.
+
+## Fallback por navegador e Computer Use
+
+Para operações não cobertas por API/MCP, ou quando seu acesso falhar, verifique se a sessão oferece Computer Use/navegador e leia as instruções correspondentes. Essa skill não é empacotada nem ativada por este plugin; o cliente precisa disponibilizar a ferramenta. Se disponível, Root a aciona explicitamente e começa em leitura, reutilizando uma sessão autenticada existente. Login/MFA e controles do cliente ficam a cargo do usuário e do produto; nunca peça senha no chat nem tente contornar bloqueios HTTP, WAF, MFA ou RBAC. Se a ferramenta estiver ausente ou o acesso continuar negado, registre BLOQUEADO e indique a evidência para o administrador.
+
+A API/MCP continua preferida para operações que suporta por oferecer respostas estruturadas. Computer Use é alternativa de interface, não forma de contornar um 412: se a interface também estiver bloqueada, interrompa. JavaScript só pode ser executado por ferramenta de navegador autorizada e após observar a página atual. Mudanças na UI permanecem sujeitas a backup, diff, autorização específica e verificação posterior.

@@ -4,7 +4,7 @@ description: Conhecimento e workflows de observabilidade para Zabbix, Grafana, P
 user-invocable: false
 license: MIT
 metadata:
-  version: "0.8.0"
+  version: "0.9.0"
 ---
 
 # Observability Dev Toolkit — conhecimento contextual
@@ -73,3 +73,7 @@ citadas nesses procedimentos ficam em references/ na raiz do plugin.
 ## Acesso persistente ao ambiente
 
 Antes de abrir navegador, leia `references/mcp-connections.md` na raiz do plugin. Use `connection_status` e as ferramentas MCP de leitura disponíveis para reutilizar autenticação. Status local não prova acesso remoto. Não solicite tokens no chat. Root executa as ferramentas; especialistas recebem apenas os resultados necessários. Importações exigem ferramenta habilitada, autorização específica e backup completo por canal apropriado.
+
+## Fallback de interface
+
+Quando API/MCP não estiver disponível ou não cobrir a operação, confira as ferramentas de navegador/Computer Use ativas na sessão e leia as instruções da skill correspondente. Se disponível, Root aciona essa ferramenta explicitamente; sua existência não é presumida nem fornecida pelo plugin. Reutilize apenas sessão autenticada que o cliente disponibilizar. Não contorne login, MFA, WAF, erros 412 ou permissões. Sem ferramenta/acesso, reporte BLOQUEADO e prossiga com análise offline. Navegação começa em leitura; qualquer escrita exige autorização para o alvo e efeito exatos, backup/diff, além de verificação.
