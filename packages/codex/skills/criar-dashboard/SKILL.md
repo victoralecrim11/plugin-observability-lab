@@ -3,7 +3,7 @@ name: criar-dashboard
 description: Gerar dashboard novo para Grafana 12.x usando datasources comprovados.
 license: MIT
 metadata:
-  version: "0.7.0"
+  version: "0.8.0"
 ---
 
 # /observability:criar-dashboard

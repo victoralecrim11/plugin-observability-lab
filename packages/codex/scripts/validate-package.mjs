@@ -101,7 +101,7 @@ function check(){
   if(market?.name!=='observability-marketplace'||codexMarket?.name!==market?.name)problems.push('Nomes de marketplaces Claude e Codex divergentes; atualizar um marketplace existente falha');
   if(codexMarket?.plugins?.[0]?.name!==claude?.name)problems.push('Plugin no marketplace Codex com identidade divergente');
   if(codexMarket?.plugins?.[0]?.version!==cx?.version)problems.push('Versao do marketplace Codex divergente do manifesto');
-  if(mcp?.mcpServers&&Object.keys(mcp.mcpServers).length!==0)problems.push('A distribuição não pode vir com MCP corporativo pré-configurado');
+
   const skillPaths=Array.isArray(cx?.skills)?cx.skills:[cx?.skills];
   if(skillPaths.length!==1||skillPaths[0]!=='./skills/')problems.push('Codex deve declarar somente ./skills/');
   for(const value of skillPaths){if(typeof value!=='string'||!value.startsWith('./')||value.includes('..')||!exists(value))problems.push(`Caminho de skills inválido: ${value}`)}
@@ -126,6 +126,10 @@ function check(){
       if(Object.hasOwn(v,'tools'))problems.push('Lista de ferramentas Antigravity fixa: '+rel);
    }
  }
+ const bridge=json(anti?'mcp_config.json':'.mcp.json');
+ const expectedBridge={mcpServers:{'observability-api':{command:'node',args:[isolated?'scripts/mcp-server.mjs':anti?'${PLUGIN_ROOT}/scripts/mcp-server.mjs':'${CLAUDE_PLUGIN_ROOT}/scripts/mcp-server.mjs'],...(isolated?{cwd:'.'}:{})}}};
+ if(JSON.stringify(bridge)!==JSON.stringify(expectedBridge))problems.push('MCP deve declarar somente a ponte local, sem destinos ou credenciais');
+ for(const f of ['mcp-server.mjs','mcp-api-client.mjs','connection-profile.mjs','configurar-conexoes.ps1','decrypt-connection-secret.ps1'])if(!exists('scripts/'+f))problems.push('Componente MCP ausente: '+f);
  if(!source&&!exists('scripts/audit-dashboard.mjs'))problems.push('Scripts offline incompletos');
  if(source&&!exists('scripts/build.mjs'))problems.push('Builder não localizado');
  const result={status:problems.length?'FAIL':'PASS',mode:source?'source':info?.platform||'unrecognized',base,skills:domain.length,operationalSkills:isolated?domain.length-1:0,legacyOperationalSkills:codex.length,commands:commands.length,workflows:workflows.length,workflowReferences:refs.length,problems};

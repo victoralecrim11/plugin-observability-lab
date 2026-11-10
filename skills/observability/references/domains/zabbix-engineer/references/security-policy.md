@@ -1,6 +1,6 @@
 # Política de segurança e execução
 
-**Modo padrão: SOMENTE LEITURA.** Este toolkit não instala Zabbix/Grafana e não reconecta ambientes já integrados. Ele orienta inspeções e pode gerar artefatos offline. Nenhum script distribuído chama APIs para escrita.
+**Modo padrão: SOMENTE LEITURA.** Este toolkit não instala Zabbix/Grafana e não reconecta ambientes já integrados. Ele orienta inspeções e pode gerar artefatos offline. A ponte MCP local usa APIs autenticadas e somente leitura por padrão. Importações ficam indisponíveis até habilitação local explícita; habilitar a ferramenta não autoriza uma mudança concreta.
 
 ## Autorização de alteração
 1. Identifique **instância**, ambiente, usuário/permissão, objeto por identificador estável e escopo exato.

@@ -3,7 +3,7 @@ name: importar-template
 description: Importar um template personalizado YAML, JSON ou XML no Zabbix com revisão, autorização e verificação no destino.
 license: MIT
 metadata:
-  version: "0.7.0"
+  version: "0.8.0"
 ---
 
 # /observability:importar-template
@@ -25,6 +25,9 @@ Leia `references/import-workflow.md` na raiz do plugin, seções comuns e Zabbix
 
 ## Resultado
 Informe arquivo/revisão, destino, ferramenta usada, objetos afetados, backup, evidências, rollback e status `PLANEJADO | EXECUTADO | VALIDADO | NÃO EXECUTADO | BLOQUEADO`. Diferencie importação persistida de monitoramento funcional: sem vínculo/teste autorizado, não afirme que a API está sendo monitorada. Sem ferramenta, permissão ou validação necessária, declare o bloqueio e entregue o plano preparado, sem alegar importação.
+
+## Ponte MCP opcional
+Consulte `references/mcp-connections.md` antes de usar `zabbix_import_template`. A ferramenta só existe com importações habilitadas localmente; isso não substitui autorização da mudança. Preserve os critérios deste workflow. A ponte Zabbix aceita somente JSON de templates; Grafana exige pasta, inputs resolvidos e identidade/version do destino para updates. Leituras redigidas não são backups completos: obtenha backup por canal autorizado ou bloqueie atualização.
 
 
 ## Localização do conhecimento

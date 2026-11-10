@@ -55,6 +55,12 @@ test('manifestos não incluem MCP corporativo ou credenciais',()=>{
  const root=path.resolve(base,'..');
  for(const name of ['.mcp.json','mcp_config.json']){
   if(!fs.existsSync(path.join(root,name)))continue;
-  assert.deepEqual(JSON.parse(fs.readFileSync(path.join(root,name),'utf8')),{mcpServers:{}});
+  const config=JSON.parse(fs.readFileSync(path.join(root,name),'utf8'));
+  assert.deepEqual(Object.keys(config.mcpServers),['observability-api']);
+  const server=config.mcpServers['observability-api'];
+  assert.equal(server.command,'node');
+  assert.equal(server.env,undefined);
+  assert.match(server.args[0],/scripts\/mcp-server\.mjs$/);
+  assert.equal(JSON.stringify(config).includes('https://'),false);
  }
 });

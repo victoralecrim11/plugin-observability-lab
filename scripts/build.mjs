@@ -40,7 +40,7 @@ function common(base) {
    check:'npm run scan && npm run validate && npm test'
  };
  write(path.join(base,'package.json'),pkg);
- write(path.join(base,'.mcp.json'),{mcpServers:{}});
+ write(path.join(base,'.mcp.json'),{mcpServers:{'observability-api':{command:'node',args:['${CLAUDE_PLUGIN_ROOT}/scripts/mcp-server.mjs']}}});
  for(const name of domainNames) cp(path.join(root,'skills',name),path.join(base,'skills',name));
 }
 function buildUnified() {
@@ -74,7 +74,7 @@ function buildUnified() {
  });
  write(path.join(base,'BUILD-INFO.json'),{
   platform,version,domainSkills:domainNames.length,commands:workflowNames.length,codexOperationalSkills:0,workflowReferences:workflowNames.length,
-  runtime:['claude-code','codex'],sourceOfTruth:'workflows/',mode:'offline',remoteWrites:0
+  runtime:['claude-code','codex'],sourceOfTruth:'workflows/',mode:'offline-and-optional-api',remoteWritesDefault:false
  });
  return {platform,path:base,skillsShared:domainNames.length,commandsClaude:workflowNames.length,skillsCodex:domainNames.length};
 }
@@ -87,7 +87,7 @@ function buildAntigravity(){
  write(path.join(base,'plugin.json'),{name:pluginName,version,displayName:'Observability Dev Toolkit',description,author,license:'MIT',keywords,
   suggestedPrompts:['Audite o Zabbix sem modificar produção','Diagnostique um painel Grafana sem dados','Planeje o monitoramento HTTP de nova aplicação']
  });
- write(path.join(base,'mcp_config.json'),{mcpServers:{}});
+ write(path.join(base,'mcp_config.json'),{mcpServers:{'observability-api':{command:'node',args:['${PLUGIN_ROOT}/scripts/mcp-server.mjs']}}});
  for(const file of fs.readdirSync(path.join(base,'agents')).filter(x=>x.endsWith('.md'))) {
   const dst=path.join(base,'agents',file);
   let body=fs.readFileSync(dst,'utf8');
@@ -95,7 +95,7 @@ function buildAntigravity(){
   write(dst,body);
  }
  write(path.join(base,'BUILD-INFO.json'),{platform,version,domainSkills:domainNames.length,operationalSkills:0,workflowReferences:workflowNames.length,
-  sourceOfTruth:'workflows/',mode:'offline',remoteWrites:0});
+  sourceOfTruth:'workflows/',mode:'offline-and-optional-api',remoteWritesDefault:false});
  return {platform,path:base,skills:domainNames.length};
 }
 fs.mkdirSync(dist,{recursive:true});
@@ -105,6 +105,7 @@ const codexBase=path.join(dist,'codex',pluginName);
 fs.rmSync(codexBase,{recursive:true,force:true});
 cp(path.join(dist,'claude-codex',pluginName),codexBase);
 for(const rel of ['commands','.claude-plugin','.agents']) fs.rmSync(path.join(codexBase,rel),{recursive:true,force:true});
+write(path.join(codexBase,'.mcp.json'),{mcpServers:{'observability-api':{command:'node',args:['scripts/mcp-server.mjs'],cwd:'.'}}});
 // Native Codex entries expose each operation once, without Claude command migration.
 for(const file of workflowNames) {
  const slug=file.replace(/\.md$/,'');
@@ -113,10 +114,10 @@ for(const file of workflowNames) {
  const guidance='\n\n## Localização do conhecimento\nResolva references/ e scripts/ citados acima a partir da raiz do plugin, dois níveis acima deste diretório. Consulte também ../observability/SKILL.md para especialidades e governança. A invocação desta operação não autoriza alterações remotas: preserve aprovação específica, backup, diff e rollback.\n';
  write(path.join(codexBase,'skills',slug,'SKILL.md'),front+workflow.body+guidance);
 }
-write(path.join(codexBase,'BUILD-INFO.json'),{platform:'codex',version,domainSkills:1,commands:0,codexOperationalSkills:workflowNames.length,workflowReferences:workflowNames.length,runtime:['codex'],sourceOfTruth:'workflows/',mode:'offline',remoteWrites:0});
+write(path.join(codexBase,'BUILD-INFO.json'),{platform:'codex',version,domainSkills:1,commands:0,codexOperationalSkills:workflowNames.length,workflowReferences:workflowNames.length,runtime:['codex'],sourceOfTruth:'workflows/',mode:'offline-and-optional-api',remoteWritesDefault:false});
 console.log(JSON.stringify({platform:'codex',path:codexBase,skills:domainNames.length+workflowNames.length,commands:0}));
 if(process.argv.includes('--sync')) {
- for(const rel of ['.claude-plugin','.codex-plugin','BUILD-INFO.json']) cp(path.join(dist,'claude-codex',pluginName,rel),path.join(root,rel));
+ for(const rel of ['.claude-plugin','.codex-plugin','.mcp.json','BUILD-INFO.json']) cp(path.join(dist,'claude-codex',pluginName,rel),path.join(root,rel));
  const published=path.join(root,'packages','codex');
  fs.rmSync(published,{recursive:true,force:true});
  cp(codexBase,published);

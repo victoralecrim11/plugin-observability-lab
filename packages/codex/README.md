@@ -146,3 +146,7 @@ prepara backup/diff/rollback e executa a importação quando o escopo concreto e
 autorizado. Sem acesso, entrega o plano e declara BLOQUEADO. Importar um template
 não autoriza vincular hosts ou disparar testes HTTP; importar um dashboard não cria
 uma fonte de dados nem garante que haverá dados. Consulte [o procedimento](references/import-workflow.md).
+
+## MCP e APIs sem login repetido (0.8.0)
+
+Ponte MCP local incluída para Claude, Codex e Antigravity. Configure uma vez tokens Zabbix/Grafana no assistente Windows `scripts/configurar-conexoes.ps1`; ficam protegidos fora do plugin. Node.js 20+ necessário. Leitura por padrão, importações opcionais com autorização específica. Consulte [configuração e limites](references/mcp-connections.md). Não altera a quantidade de skills no menu.

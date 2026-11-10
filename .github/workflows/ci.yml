@@ -28,6 +28,8 @@ jobs:
         run: npm install --global @openai/codex@0.166.0
       - name: Verify real plugin and skill catalogs in an isolated profile
         run: node scripts/test-runtime-local.mjs
+      - name: Verify bundled MCP in an isolated real runtime
+        run: node scripts/test-mcp-runtime.mjs
       - name: Validate isolated Codex package
         working-directory: dist/codex/observability
         run: npm run check

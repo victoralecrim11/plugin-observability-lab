@@ -114,7 +114,7 @@ Remover o marketplace não remove dados de monitoramento: os scripts deste proje
 - Claude não mostra comando: confira /plugin, erros, versão do plugin e execute /reload-plugins.
 - Codex não mostra skill: confirme codex plugin marketplace list, a origem Git e o registro no catálogo; reinicie o cliente.
 - Atualizou e continua antigo: confira os campos "version" dos manifests e marketplaces, refaça o refresh e evite caches antigos.
-- Não há conexão com Zabbix/Grafana: o plugin não fornece credenciais nem MCP corporativo. Configure apenas integrações autorizadas no seu ambiente.
+- Não há conexão com Zabbix/Grafana: a ponte MCP local requer configuração de tokens uma vez. Consulte [conexões persistentes](../references/mcp-connections.md). Verifique Node.js 20+ no PATH e habilitação do MCP no cliente; o plugin não fornece credenciais.
 - Comandos falham em scripts locais: execute npm run check para obter o erro específico.
 
 A execução de testes offline prova somente estrutura e lógica local, não homologação da instalação nos clientes.

@@ -23,3 +23,6 @@ Leia `references/import-workflow.md` na raiz do plugin, seções comuns e Grafan
 
 ## Resultado
 Informe UID e link do dashboard, pasta/organização, resultado da importação, backup, diff, evidências e rollback. Use `PLANEJADO | EXECUTADO | VALIDADO | NÃO EXECUTADO | BLOQUEADO`; nunca declare sucesso apenas porque o arquivo JSON foi preparado. Este comando não importa template Zabbix: use `importar-template` para esse objetivo, com escopo próprio.
+
+## Ponte MCP opcional
+Consulte `references/mcp-connections.md` antes de usar `grafana_import_dashboard`. A ferramenta só existe com importações habilitadas localmente; isso não substitui autorização da mudança. Preserve os critérios deste workflow. A ponte Zabbix aceita somente JSON de templates; Grafana exige pasta, inputs resolvidos e identidade/version do destino para updates. Leituras redigidas não são backups completos: obtenha backup por canal autorizado ou bloqueie atualização.

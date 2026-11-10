@@ -1,6 +1,6 @@
 {
   "platform": "claude-codex",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "domainSkills": 1,
   "commands": 21,
   "codexOperationalSkills": 0,
@@ -10,6 +10,6 @@
     "codex"
   ],
   "sourceOfTruth": "workflows/",
-  "mode": "offline",
-  "remoteWrites": 0
+  "mode": "offline-and-optional-api",
+  "remoteWritesDefault": false
 }

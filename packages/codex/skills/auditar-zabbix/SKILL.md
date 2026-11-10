@@ -3,7 +3,7 @@ name: auditar-zabbix
 description: Auditar configuração, coleta e alertas do Zabbix 7.4.x em modo leitura.
 license: MIT
 metadata:
-  version: "0.7.0"
+  version: "0.8.0"
 ---
 
 # /observability:auditar-zabbix

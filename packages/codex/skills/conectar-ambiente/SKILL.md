@@ -3,7 +3,7 @@ name: conectar-ambiente
 description: Descobrir e testar, em leitura, as conexões já existentes; não instalar ou reintegrar servidores.
 license: MIT
 metadata:
-  version: "0.7.0"
+  version: "0.8.0"
 ---
 
 # /observability:conectar-ambiente
@@ -39,6 +39,9 @@ Entregue inventário de conexões, versões observadas, permissões, bloqueios, 
 - Separar claramente resultado de validação offline de resultado observado no ambiente.
 - Encaminhar à especialidade Zabbix, Grafana ou Integrações de acordo com a fase da investigação.
 - Consultar `references/operational-baseline.md`, `references/security-policy.md` e `references/workflow-routing.md` dentro do plugin, se disponíveis.
+
+## MCP e autenticação persistente
+Consulte `references/mcp-connections.md` na raiz do plugin. Priorize `connection_status`, depois leitura autenticada de templates Zabbix ou search/dashboard Grafana. Status e endpoints públicos não comprovam autenticação. Se não configurado, oriente o assistente local `scripts/configurar-conexoes.ps1`; não peça tokens no chat. Falta de MCP disponível não deve ser interpretada como credencial inválida. Reutilize API antes do navegador quando cobrir a operação.
 
 
 ## Localização do conhecimento
