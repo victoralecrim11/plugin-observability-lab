@@ -1,20 +1,42 @@
 name: Publish validated release
+
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing release tag (for example, v0.9.0)'
+        required: true
+        type: string
+
 permissions:
   contents: write
+
+concurrency:
+  group: release-${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      RELEASE_TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout the exact release tag
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Validate version and all distributions
+      - name: Validate tag, version and all distributions
+        shell: bash
         run: |
-          test "$GITHUB_REF_NAME" = "v$(node -p "require('./package.json').version")"
+          set -euo pipefail
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Invalid release tag"; exit 1; }
+          test "$RELEASE_TAG" = "v$(node -p "require('./package.json').version")"
           npm run check
           npm run build
           node scripts/verify-generated.mjs
@@ -27,10 +49,23 @@ jobs:
           node scripts/test-runtime-local.mjs
           node scripts/test-mcp-runtime.mjs
       - name: Publish release archives
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
           for platform in claude-codex codex antigravity; do
-            (cd "dist/$platform" && zip -qr "../../observability-$platform-$GITHUB_REF_NAME.zip" observability)
+            (cd "dist/$platform" && zip -qr "../../observability-$platform-$RELEASE_TAG.zip" observability)
           done
-          gh release create "$GITHUB_REF_NAME" observability-*.zip --verify-tag --title "Observability Dev Toolkit $GITHUB_REF_NAME" --notes-file "docs/RELEASE-$GITHUB_REF_NAME.md"
+          release_notes="docs/RELEASE-$RELEASE_TAG.md"
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo "Release already exists; updating its archives."
+            gh release upload "$RELEASE_TAG" observability-*.zip --clobber
+          elif [[ -f "$release_notes" ]]; then
+            gh release create "$RELEASE_TAG" observability-*.zip --verify-tag \
+              --title "Observability Dev Toolkit $RELEASE_TAG" --notes-file "$release_notes"
+          else
+            echo "No $release_notes; using GitHub-generated release notes."
+            gh release create "$RELEASE_TAG" observability-*.zip --verify-tag \
+              --title "Observability Dev Toolkit $RELEASE_TAG" --generate-notes
+          fi
