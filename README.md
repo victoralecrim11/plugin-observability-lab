@@ -92,7 +92,7 @@ Na interface Claude Desktop, abra **+ → Plugins → Add plugin** para acessar 
 | Operações | integrar-aplicacao, renomear-hosts, alertas |
 | Governança | backup, validar, relatorio |
 
-No Claude Code, as operações usam o prefixo de namespace "/observability:". No Codex e Antigravity, peça a operação em linguagem natural: uma única skill seleciona o procedimento em suas referências.
+No Claude Code, as operações usam o prefixo de namespace "/observability:". No Codex, selecione uma das 19 operações no menu ou peça em linguagem natural; a entrada observability mantém o conhecimento contextual. No Antigravity, uma skill seleciona o procedimento por intenção.
 
 ## Desenvolvendo e publicando uma alteração
 
@@ -125,6 +125,6 @@ Licença MIT.
 
 ## Orquestração e proteção de invocação
 
-Uma única skill model-invoked (`observability`) roteia quatro especialidades e 19 procedimentos em referências. O Claude oculta essa skill do menu slash com `user-invocable: false` e mantém os 19 comandos; oito comandos de mudança exigem invocação explícita. Codex/ChatGPT podem mostrar a única skill no catálogo de plugins: a flag Claude não promete ocultação nessa interface. O pacote Codex não contém comandos Claude e por isso não gera entradas `Source Command`. Antigravity usa a mesma skill e as mesmas referências.
+Uma única skill model-invoked (`observability`) roteia quatro especialidades e 19 procedimentos em referências. O Claude oculta essa skill do menu slash com `user-invocable: false` e mantém os 19 comandos; oito comandos de mudança exigem invocação explícita. Codex/ChatGPT mostram 19 operações nativas mais a skill contextual observability (20 entradas únicas): a flag Claude não promete ocultação nessa interface. O pacote Codex não contém comandos Claude e por isso não gera entradas `Source Command`. Antigravity usa a mesma skill e as mesmas referências.
 
 Cinco agentes têm prefixo observability- para evitar colisão com outros plugins. ROOT_ROUTED significa que Root coordena ferramentas; especialistas produzem análise ou CANONICAL OUTPUT; auditor verifica artefatos. Consulte docs/AGENTIC.md.

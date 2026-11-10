@@ -4,7 +4,7 @@ description: Conhecimento e workflows de observabilidade para Zabbix, Grafana, P
 user-invocable: false
 license: MIT
 metadata:
-  version: "0.6.0"
+  version: "0.6.1"
 ---
 
 # Observability Dev Toolkit — conhecimento contextual

@@ -14,9 +14,10 @@ const refs='skills/observability/references/workflows';
 const names=dir=>fs.readdirSync(p(dir)).filter(n=>n.endsWith('.md')).sort();
 const walk=dir=>fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):[path.join(dir,e.name)]);
 
-test('catálogo contém somente a entrada observability, sem skills dentro das referências',()=>{
+test('catálogo contém somente roteador e operações nativas esperadas, sem skills internas',()=>{
  const files=walk(p('skills')).filter(f=>path.basename(f)==='SKILL.md');
- assert.deepEqual(files,[p('skills/observability/SKILL.md')]);
+ const expected=['observability',...(info.platform==='codex'?names(refs).map(n=>n.slice(0,-3)):[])];
+ assert.deepEqual(files.sort(),expected.map(n=>p('skills/'+n+'/SKILL.md')).sort());
  assert.equal(fs.existsSync(p('codex-skills')),false);
  for(const dir of ['.codex-plugin/migrated-command-skills','.claude-plugin/migrated-command-skills'])assert.equal(fs.existsSync(p(dir)),false,dir);
 });
@@ -30,6 +31,16 @@ test('19 workflows preservados integralmente entre fonte, comandos e referência
   for(const n of operations)assert.equal(read(dir+'/'+n),read(refs+'/'+n),n);
  }
  if(info.platform==='claude-codex')assert.equal(names('commands').length,19);
+ if(info.platform==='codex')for(const file of operations){
+  const slug=file.slice(0,-3);
+  const raw=read(refs+'/'+file);
+  const body=raw.match(/^---\n[\s\S]*?\n---\n([\s\S]*)$/)?.[1];
+  const native=read('skills/'+slug+'/SKILL.md');
+  assert.ok(body&&native.includes(body),'Workflow body lost: '+slug);
+  assert.match(native,new RegExp('^name: '+slug+'$','m'));
+  assert.doesNotMatch(native,/^user-invocable:\s*false$/m);
+ }
+
 });
 
 test('Codex e Antigravity isolam comandos Claude para impedir Source Command',()=>{
@@ -64,7 +75,16 @@ test('validador rejeita skill extra e workflow adulterado',()=>{
   fs.writeFileSync(path.join(fixture,'skills/duplicate/SKILL.md'),'---\nname: duplicate\ndescription: Duplicate\n---\n');
   result=validate();
   assert.equal(result.status,1,result.stdout);
-  assert.match(result.stdout,/skill model-invoked única/);
+  assert.match(result.stdout,/quantidade de skills esperada/);
+  fs.rmSync(path.join(fixture,'skills/duplicate'),{recursive:true});
+  if(info.platform==='codex'){
+   const slug=names(refs)[0].slice(0,-3);
+   const native=path.join(fixture,'skills',slug,'SKILL.md');
+   fs.writeFileSync(native,fs.readFileSync(native,'utf8').replace('## Passos operacionais','## Alterado'));
+   result=validate();
+   assert.equal(result.status,1);
+   assert.match(result.stdout,/Workflow divergente/);
+  }
   if(info.platform==='claude-codex'){
    fs.appendFileSync(path.join(fixture,refs,names(refs)[0]),'\nchanged\n');
    result=validate();

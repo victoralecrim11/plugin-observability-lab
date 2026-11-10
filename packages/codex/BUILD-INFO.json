@@ -1,9 +1,9 @@
 {
   "platform": "codex",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "domainSkills": 1,
   "commands": 0,
-  "codexOperationalSkills": 0,
+  "codexOperationalSkills": 19,
   "workflowReferences": 19,
   "runtime": [
     "codex"

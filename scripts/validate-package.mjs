@@ -22,7 +22,7 @@ function check(){
  const info=json('BUILD-INFO.json');
  const combined=info?.platform==='claude-codex';const anti=info?.platform==='antigravity';const isolated=info?.platform==='codex';
  if(!combined&&!anti&&!isolated)problems.push('Plataforma desconhecida');
- eq(domain.length,1,'skill model-invoked única');
+ eq(domain.length,isolated?20:1,'quantidade de skills esperada');
  eq(codex.length,0,'skills operacionais Codex legadas');
  if(exists('codex-skills'))problems.push('Diretório codex-skills legado');
  for(const rel of ['.codex-plugin/migrated-command-skills','.claude-plugin/migrated-command-skills'])if(exists(rel))problems.push('Source Command migrado no pacote: '+rel);
@@ -46,6 +46,23 @@ function check(){
  const refDir='skills/observability/references/workflows';
  const refs=list(path.join(base,refDir)).filter(x=>x.endsWith('.md'));
  eq(refs.length,19,'workflows como referências');
+ const expectedNames=['observability',...(isolated?refs.map(f=>path.basename(f,'.md')):[])].sort();
+ const actualNames=domain.map(f=>path.basename(path.dirname(f))).sort();
+ if(JSON.stringify(actualNames)!==JSON.stringify(expectedNames))problems.push('Catálogo de skills divergente');
+ for(const file of domain)if(path.relative(path.join(base,'skills'),file).split(path.sep).length!==2)problems.push('Skill interna exposta: '+file);
+ if(isolated)for(const ref of refs){
+  const slug=path.basename(ref,'.md');
+  const rel='skills/'+slug+'/SKILL.md';
+  if(!exists(rel)){problems.push('Operação Codex ausente: '+slug);continue;}
+  const canonical=fs.readFileSync(ref,'utf8').replace(/\r\n/g,'\n');
+  const content=read(rel).replace(/\r\n/g,'\n');
+  const body=canonical.match(/^---\n[\s\S]*?\n---\n([\s\S]*)$/)?.[1];
+  const front=fm(path.join(base,rel));
+  if(!body||!content.includes(body))problems.push('Workflow divergente na operação Codex: '+slug);
+  if(front.description!==fm(ref).description)problems.push('Descrição Codex divergente: '+slug);
+  if(front['user-invocable']==='false')problems.push('Operação Codex oculta do menu: '+slug);
+ }
+
  for(const name of ['observability-orchestrator','zabbix-engineer','grafana-engineer','monitoring-integrations']){
   if(!exists('skills/observability/references/domains/'+name+'/GUIDE.md'))problems.push('Conhecimento de domínio ausente: '+name);
  }
@@ -107,7 +124,7 @@ function check(){
  }
  if(!source&&!exists('scripts/audit-dashboard.mjs'))problems.push('Scripts offline incompletos');
  if(source&&!exists('scripts/build.mjs'))problems.push('Builder não localizado');
- const result={status:problems.length?'FAIL':'PASS',mode:source?'source':info?.platform||'unrecognized',base,skills:domain.length,operationalSkills:codex.length,commands:commands.length,workflows:workflows.length,workflowReferences:refs.length,problems};
+ const result={status:problems.length?'FAIL':'PASS',mode:source?'source':info?.platform||'unrecognized',base,skills:domain.length,operationalSkills:isolated?domain.length-1:0,legacyOperationalSkills:codex.length,commands:commands.length,workflows:workflows.length,workflowReferences:refs.length,problems};
  console.log(JSON.stringify(result,null,2));if(problems.length)process.exitCode=1;
 }
 check();

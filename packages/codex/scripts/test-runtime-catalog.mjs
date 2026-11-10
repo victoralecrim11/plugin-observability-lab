@@ -6,6 +6,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {spawn} from 'node:child_process';
 import {createInterface} from 'node:readline';
+import {fileURLToPath} from 'node:url';
+const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const workflowDir=fs.existsSync(path.join(root,'workflows'))?path.join(root,'workflows'):path.join(root,'skills/observability/references/workflows');
+const expectedNames=['observability',...fs.readdirSync(workflowDir).filter(n=>n.endsWith('.md')).map(n=>n.slice(0,-3))].sort();
+assert.equal(expectedNames.length,20,'Expected router plus 19 canonical workflows');
 
 const args=process.argv.slice(2);
 const option=name=>{
@@ -44,8 +49,8 @@ function request(method,params){
  });
 }
 function assertCatalog(skills,label){
- assert.equal(skills.length,1,`${label}: expected exactly one Observability skill`);
- assert.ok(['observability','observability:observability'].includes(skills[0].name),`${label}: unexpected skill name ${skills[0].name}`);
+ const actualNames=skills.map(s=>s.name.replace(/^observability:/,'')).sort();
+ assert.deepEqual(actualNames,expectedNames,`${label}: expected exactly the router and 19 native workflows`);
  assert.ok(!skills.some(s=>/source-command|migrated-command-skills/i.test(`${s.name} ${s.path}`)),`${label}: migrated command leaked`);
 }
 try{
@@ -65,11 +70,11 @@ try{
  for(const entry of catalog.data){
   const owned=entry.skills.filter(s=>s.pluginId===plugin.summary.id || (!s.pluginId&&/[\\/]observability[\\/]/i.test(s.path)));
   assertCatalog(owned,'skills/list');
-  assert.ok(owned[0].enabled,'Observability skill is disabled');
+  for(const skill of owned)assert.ok(skill.enabled,'Observability skill is disabled: '+skill.name);
   const errors=(entry.errors||[]).filter(e=>/observability/i.test(e.path));
   assert.deepEqual(errors,[],'Observability skill loading errors');
  }
- console.log(JSON.stringify({status:'PASS',runtime:initialized.userAgent||null,pluginId:plugin.summary.id,pluginReadSkills:plugin.skills.map(s=>s.name),skillsListCount:1,sourceCommands:0,scope:'Real app-server catalog; visual UI is a separate check'},null,2));
+ console.log(JSON.stringify({status:'PASS',runtime:initialized.userAgent||null,pluginId:plugin.summary.id,pluginReadSkills:plugin.skills.map(s=>s.name),skillsListCount:expectedNames.length,sourceCommands:0,scope:'Real app-server catalog; visual UI is a separate check'},null,2));
 }catch(error){
  console.error(JSON.stringify({status:'FAIL',message:error.message},null,2));
  process.exitCode=1;
