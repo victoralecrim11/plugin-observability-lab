@@ -3,7 +3,7 @@ name: atualizar-dashboard
 description: Modificar dashboard Grafana existente sem perder UIDs, variáveis ou dados.
 license: MIT
 metadata:
-  version: "0.6.1"
+  version: "0.7.0"
 ---
 
 # /observability:atualizar-dashboard

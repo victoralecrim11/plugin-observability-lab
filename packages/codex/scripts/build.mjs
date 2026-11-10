@@ -113,8 +113,8 @@ for(const file of workflowNames) {
  const guidance='\n\n## Localização do conhecimento\nResolva references/ e scripts/ citados acima a partir da raiz do plugin, dois níveis acima deste diretório. Consulte também ../observability/SKILL.md para especialidades e governança. A invocação desta operação não autoriza alterações remotas: preserve aprovação específica, backup, diff e rollback.\n';
  write(path.join(codexBase,'skills',slug,'SKILL.md'),front+workflow.body+guidance);
 }
-write(path.join(codexBase,'BUILD-INFO.json'),{platform:'codex',version,domainSkills:1,commands:0,codexOperationalSkills:19,workflowReferences:19,runtime:['codex'],sourceOfTruth:'workflows/',mode:'offline',remoteWrites:0});
-console.log(JSON.stringify({platform:'codex',path:codexBase,skills:20,commands:0}));
+write(path.join(codexBase,'BUILD-INFO.json'),{platform:'codex',version,domainSkills:1,commands:0,codexOperationalSkills:workflowNames.length,workflowReferences:workflowNames.length,runtime:['codex'],sourceOfTruth:'workflows/',mode:'offline',remoteWrites:0});
+console.log(JSON.stringify({platform:'codex',path:codexBase,skills:domainNames.length+workflowNames.length,commands:0}));
 if(process.argv.includes('--sync')) {
  for(const rel of ['.claude-plugin','.codex-plugin','BUILD-INFO.json']) cp(path.join(dist,'claude-codex',pluginName,rel),path.join(root,rel));
  const published=path.join(root,'packages','codex');

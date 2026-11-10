@@ -3,7 +3,7 @@ name: diagnosticar
 description: Investigar incidentes multi-camada e encaminhar ao especialista correto.
 license: MIT
 metadata:
-  version: "0.6.1"
+  version: "0.7.0"
 ---
 
 # /observability:diagnosticar

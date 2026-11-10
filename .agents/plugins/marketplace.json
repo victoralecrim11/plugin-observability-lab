@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "observability",
-      "version": "0.6.1",
+      "version": "0.7.0",
       "source": {
         "source": "git-subdir",
         "url": "https://github.com/victoralecrim11/plugin-observability-lab.git",

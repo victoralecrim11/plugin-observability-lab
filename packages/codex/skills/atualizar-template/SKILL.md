@@ -3,7 +3,7 @@ name: atualizar-template
 description: Analisar e alterar template Zabbix existente com comparação e rollback.
 license: MIT
 metadata:
-  version: "0.6.1"
+  version: "0.7.0"
 ---
 
 # /observability:atualizar-template

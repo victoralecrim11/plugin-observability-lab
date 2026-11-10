@@ -1,0 +1,25 @@
+{
+  "workflows": [
+    "alertas",
+    "atualizar-dashboard",
+    "atualizar-template",
+    "auditar-datasources",
+    "auditar-grafana",
+    "auditar-zabbix",
+    "backup",
+    "conectar-ambiente",
+    "criar-dashboard",
+    "criar-template",
+    "diagnosticar",
+    "diagnosticar-coleta",
+    "diagnosticar-painel",
+    "importar-dashboard",
+    "importar-template",
+    "integrar-aplicacao",
+    "inventariar",
+    "monitorar-http",
+    "relatorio",
+    "renomear-hosts",
+    "validar"
+  ]
+}

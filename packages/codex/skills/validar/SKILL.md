@@ -3,7 +3,7 @@ name: validar
 description: Validar artefatos, referências e resultados de mudanças observáveis.
 license: MIT
 metadata:
-  version: "0.6.1"
+  version: "0.7.0"
 ---
 
 # /observability:validar

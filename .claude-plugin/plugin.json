@@ -2,7 +2,7 @@
   "name": "observability",
   "displayName": "Observability Dev Toolkit",
   "description": "Sustentação e engenharia de observabilidade para Zabbix 7.4.x, Grafana 12.x e integrações, priorizando auditoria e mudanças autorizadas.",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "author": {
     "name": "Victor Alecrim",
     "url": "https://github.com/victoralecrim11"

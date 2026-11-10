@@ -3,7 +3,7 @@ name: conectar-ambiente
 description: Descobrir e testar, em leitura, as conexões já existentes; não instalar ou reintegrar servidores.
 license: MIT
 metadata:
-  version: "0.6.1"
+  version: "0.7.0"
 ---
 
 # /observability:conectar-ambiente

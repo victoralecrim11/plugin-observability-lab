@@ -1,10 +1,10 @@
 ---
 name: observability
-description: Conhecimento e workflows de observabilidade para Zabbix, Grafana, Prometheus e integrações. Use para conectar ou inventariar ambientes, auditar Zabbix, Grafana e datasources, diagnosticar coleta ou painéis sem dados, planejar e criar ou atualizar templates e dashboards, monitorar HTTP, integrar aplicações, renomear hosts, revisar alertas, backups, validações e relatórios. Coordena mudanças autorizadas com evidências e rollback.
+description: Conhecimento e workflows de observabilidade para Zabbix, Grafana, Prometheus e integrações. Use para conectar ou inventariar ambientes, auditar Zabbix, Grafana e datasources, diagnosticar coleta ou painéis sem dados, importar templates Zabbix e dashboards JSON Grafana, planejar e criar ou atualizar templates e dashboards, monitorar HTTP, integrar aplicações, renomear hosts, revisar alertas, backups, validações e relatórios. Coordena mudanças autorizadas com evidências e rollback.
 user-invocable: false
 license: MIT
 metadata:
-  version: "0.6.1"
+  version: "0.7.0"
 ---
 
 # Observability Dev Toolkit — conhecimento contextual
@@ -39,6 +39,8 @@ esses papéis e referências, não skills adicionais a procurar no catálogo.
 | Diagnosticar um incidente | `references/workflows/diagnosticar.md` |
 | Diagnosticar coleta | `references/workflows/diagnosticar-coleta.md` |
 | Diagnosticar painel | `references/workflows/diagnosticar-painel.md` |
+| Importar template Zabbix | `references/workflows/importar-template.md` |
+| Importar dashboard JSON Grafana | `references/workflows/importar-dashboard.md` |
 | Criar template | `references/workflows/criar-template.md` |
 | Atualizar template | `references/workflows/atualizar-template.md` |
 | Monitorar HTTP | `references/workflows/monitorar-http.md` |

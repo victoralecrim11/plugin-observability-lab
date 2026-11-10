@@ -3,7 +3,7 @@ name: criar-template
 description: Projetar template novo para Zabbix 7.4.x a partir de requisitos verificados.
 license: MIT
 metadata:
-  version: "0.6.1"
+  version: "0.7.0"
 ---
 
 # /observability:criar-template

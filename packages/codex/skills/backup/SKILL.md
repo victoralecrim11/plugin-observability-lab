@@ -3,7 +3,7 @@ name: backup
 description: Exportar configuração de objetos monitorados sem alterar a infraestrutura.
 license: MIT
 metadata:
-  version: "0.6.1"
+  version: "0.7.0"
 ---
 
 # /observability:backup

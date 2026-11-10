@@ -10,9 +10,20 @@ const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const p=rel=>path.join(root,rel);
 const read=rel=>fs.readFileSync(p(rel),'utf8').replace(/\r\n/g,'\n');
 const info=JSON.parse(read('BUILD-INFO.json'));
+const catalog=JSON.parse(read('config/workflow-catalog.json')).workflows;
 const refs='skills/observability/references/workflows';
 const names=dir=>fs.readdirSync(p(dir)).filter(n=>n.endsWith('.md')).sort();
 const walk=dir=>fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):[path.join(dir,e.name)]);
+
+test('roteador alcança todo o catálogo, incluindo as duas importações',()=>{
+ const router=read('skills/observability/SKILL.md');
+ for(const slug of catalog)assert.ok(router.includes('references/workflows/'+slug+'.md'),slug);
+ assert.ok(fs.existsSync(p('references/import-workflow.md')));
+ for(const slug of ['importar-template','importar-dashboard']){
+  const workflow=read(refs+'/'+slug+'.md');
+  assert.ok(workflow.includes('references/import-workflow.md'),slug);
+ }
+});
 
 test('catálogo contém somente roteador e operações nativas esperadas, sem skills internas',()=>{
  const files=walk(p('skills')).filter(f=>path.basename(f)==='SKILL.md');
@@ -22,15 +33,16 @@ test('catálogo contém somente roteador e operações nativas esperadas, sem sk
  for(const dir of ['.codex-plugin/migrated-command-skills','.claude-plugin/migrated-command-skills'])assert.equal(fs.existsSync(p(dir)),false,dir);
 });
 
-test('19 workflows preservados integralmente entre fonte, comandos e referências',()=>{
+test('Workflows preservados integralmente entre fonte, comandos e referências',()=>{
  const operations=names(refs);
- assert.equal(operations.length,19);
+ assert.deepEqual(operations,catalog.map(n=>n+'.md').sort());
+ assert.ok(catalog.includes('importar-template')&&catalog.includes('importar-dashboard'));
  for(const dir of ['commands','workflows']){
   if(!fs.existsSync(p(dir)))continue;
   assert.deepEqual(names(dir),operations,dir);
   for(const n of operations)assert.equal(read(dir+'/'+n),read(refs+'/'+n),n);
  }
- if(info.platform==='claude-codex')assert.equal(names('commands').length,19);
+ if(info.platform==='claude-codex')assert.equal(names('commands').length,catalog.length);
  if(info.platform==='codex')for(const file of operations){
   const slug=file.slice(0,-3);
   const raw=read(refs+'/'+file);

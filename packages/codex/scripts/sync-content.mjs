@@ -3,8 +3,11 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import assert from 'node:assert/strict';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const names=fs.readdirSync(path.join(root,'workflows')).filter(n=>n.endsWith('.md')).sort();
+const catalog=JSON.parse(fs.readFileSync(path.join(root,'config/workflow-catalog.json'),'utf8')).workflows;
+assert.deepEqual(names,catalog.map(n=>n+'.md').sort(),'Workflow source must match the canonical catalog');
 for(const rel of ['commands','skills/observability/references/workflows']) {
  const dir=path.join(root,rel);
  fs.mkdirSync(dir,{recursive:true});

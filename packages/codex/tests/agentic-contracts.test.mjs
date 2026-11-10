@@ -11,7 +11,7 @@ const fm=x=>read(x).split(/^---\r?\n/)[1]?.split(/\r?\n---/)[0]??'';
 const info=JSON.parse(read('BUILD-INFO.json'));
 const isAnti=info.platform==='antigravity';
 const special=['observability-orchestrator','zabbix-engineer','grafana-engineer','monitoring-integrations'];
-const guarded=['alertas','atualizar-dashboard','atualizar-template','criar-dashboard','criar-template','integrar-aplicacao','monitorar-http','renomear-hosts'];
+const guarded=['alertas','atualizar-dashboard','atualizar-template','criar-dashboard','criar-template','integrar-aplicacao','monitorar-http','renomear-hosts','importar-template','importar-dashboard'];
 const agents=['observability-planner','observability-quality-auditor','observability-zabbix-specialist','observability-grafana-specialist','observability-integration-specialist'];
 
 test('skill roteadora model-invoked mantém conhecimento e operações fora do catálogo',()=>{

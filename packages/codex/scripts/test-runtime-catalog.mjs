@@ -10,7 +10,8 @@ import {fileURLToPath} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const workflowDir=fs.existsSync(path.join(root,'workflows'))?path.join(root,'workflows'):path.join(root,'skills/observability/references/workflows');
 const expectedNames=['observability',...fs.readdirSync(workflowDir).filter(n=>n.endsWith('.md')).map(n=>n.slice(0,-3))].sort();
-assert.equal(expectedNames.length,20,'Expected router plus 19 canonical workflows');
+const catalog=JSON.parse(fs.readFileSync(path.join(root,'config/workflow-catalog.json'),'utf8')).workflows;
+assert.deepEqual(expectedNames,['observability',...catalog].sort(),'Expected router plus canonical workflows');
 
 const args=process.argv.slice(2);
 const option=name=>{
@@ -50,7 +51,7 @@ function request(method,params){
 }
 function assertCatalog(skills,label){
  const actualNames=skills.map(s=>s.name.replace(/^observability:/,'')).sort();
- assert.deepEqual(actualNames,expectedNames,`${label}: expected exactly the router and 19 native workflows`);
+ assert.deepEqual(actualNames,expectedNames,`${label}: expected exactly the router and all native workflows`);
  assert.ok(!skills.some(s=>/source-command|migrated-command-skills/i.test(`${s.name} ${s.path}`)),`${label}: migrated command leaked`);
 }
 try{

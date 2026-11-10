@@ -3,7 +3,7 @@ name: diagnosticar-painel
 description: Investigar painéis Grafana vazios, título ausente, consultas inválidas ou valores inconsistentes.
 license: MIT
 metadata:
-  version: "0.6.1"
+  version: "0.7.0"
 ---
 
 # /observability:diagnosticar-painel

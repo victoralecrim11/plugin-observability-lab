@@ -57,7 +57,7 @@ Para desenvolvimento local, clone o repositório. O marketplace na raiz pode ser
 
 Nesse caso, execute o comando a partir do diretório-pai. A origem local e a origem Git podem ter o mesmo nome de marketplace; evite registrar ambas ao mesmo tempo se causarem colisão.
 
-O marketplace Codex instala packages/codex/ com 19 operações nativas selecionáveis e uma skill contextual (20 entradas). Busque backup, diagnosticar, relatorio ou outra operação no menu. Não há cópias Source Command.
+O marketplace Codex instala packages/codex/ com 21 operações nativas selecionáveis e uma skill contextual (22 entradas). Busque backup, diagnosticar, relatorio ou outra operação no menu. Não há cópias Source Command.
 
 > **Mesmo nome para os dois clientes:** Claude Code e Codex cadastram o catálogo como observability-marketplace, mas mantêm registros independentes. Se o Codex foi cadastrado antes da padronização, basta atualizar o marketplace existente; não crie um segundo catálogo com outro nome.
 

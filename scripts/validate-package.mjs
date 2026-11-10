@@ -20,15 +20,18 @@ function check(){
  const commands=list(path.join(base,'commands')).filter(x=>x.endsWith('.md'));
  const workflows=list(path.join(base,'workflows')).filter(x=>x.endsWith('.md'));
  const info=json('BUILD-INFO.json');
+ const catalog=json('config/workflow-catalog.json')?.workflows||[];
+ const count=catalog.length;
+ if(!count||new Set(catalog).size!==count)problems.push('Catálogo canônico vazio ou duplicado');
  const combined=info?.platform==='claude-codex';const anti=info?.platform==='antigravity';const isolated=info?.platform==='codex';
  if(!combined&&!anti&&!isolated)problems.push('Plataforma desconhecida');
- eq(domain.length,isolated?20:1,'quantidade de skills esperada');
+ eq(domain.length,isolated?count+1:1,'quantidade de skills esperada');
  eq(codex.length,0,'skills operacionais Codex legadas');
  if(exists('codex-skills'))problems.push('Diretório codex-skills legado');
  for(const rel of ['.codex-plugin/migrated-command-skills','.claude-plugin/migrated-command-skills'])if(exists(rel))problems.push('Source Command migrado no pacote: '+rel);
  if(isolated||anti)for(const rel of ['commands','.claude-plugin'])if(exists(rel))problems.push('Superfície Claude indevida: '+rel);
- eq(commands.length,combined?19:0,'comandos Claude');
- eq(workflows.length,source || (combined && exists('workflows')) ? 19 : 0,'workflows fonte');
+ eq(commands.length,combined?count:0,'comandos Claude');
+ eq(workflows.length,source || (combined && exists('workflows')) ? count : 0,'workflows fonte');
  for(const file of [...domain,...codex]){
   try{const v=fm(file),slug=path.basename(path.dirname(file));
    if(v.name!==slug)problems.push(`Nome SKILL.md incompatível com pasta: ${file}`);
@@ -45,7 +48,8 @@ function check(){
  }
  const refDir='skills/observability/references/workflows';
  const refs=list(path.join(base,refDir)).filter(x=>x.endsWith('.md'));
- eq(refs.length,19,'workflows como referências');
+ eq(refs.length,count,'workflows como referências');
+ if(JSON.stringify(refs.map(f=>path.basename(f,'.md')).sort())!==JSON.stringify([...catalog].sort()))problems.push('Referências divergentes do catálogo canônico');
  const expectedNames=['observability',...(isolated?refs.map(f=>path.basename(f,'.md')):[])].sort();
  const actualNames=domain.map(f=>path.basename(path.dirname(f))).sort();
  if(JSON.stringify(actualNames)!==JSON.stringify(expectedNames))problems.push('Catálogo de skills divergente');
@@ -82,7 +86,7 @@ function check(){
   if(/Bearer\s+[a-z0-9_-]{25,}/i.test(t)||/\bsk-proj-[a-z0-9_-]{20,}/i.test(t))problems.push(`Possível credencial literal: ${file}`);
  }
  if(combined){
-  for(const n of ['alertas','atualizar-dashboard','atualizar-template','criar-dashboard','criar-template','integrar-aplicacao','monitorar-http','renomear-hosts']){
+  for(const n of ['alertas','atualizar-dashboard','atualizar-template','criar-dashboard','criar-template','integrar-aplicacao','monitorar-http','renomear-hosts','importar-template','importar-dashboard']){
     const p='commands/'+n+'.md';
     if(!exists(p)||fm(path.join(base,p))['disable-model-invocation']!=='true')problems.push('Comando de alteracao sem invocacao manual: '+n);
   }

@@ -1,6 +1,6 @@
 # Observability Dev Toolkit
 
-Plugin de engenharia de observabilidade para **Claude Code + Codex**, em um único repositório. Contém 19 procedimentos operacionais, uma skill contextual com quatro especialidades e 5 agentes declarativos para manutenção, auditoria e troubleshooting de Zabbix/Grafana, Prometheus e integrações.
+Plugin de engenharia de observabilidade para **Claude Code + Codex**, em um único repositório. Contém 21 procedimentos operacionais, uma skill contextual com quatro especialidades e 5 agentes declarativos para manutenção, auditoria e troubleshooting de Zabbix/Grafana, Prometheus e integrações.
 
 > Os exemplos são genéricos e sintéticos. Não são distribuídas credenciais, endereços internos, configurações ou documentos de organizações.
 
@@ -92,7 +92,7 @@ Na interface Claude Desktop, abra **+ → Plugins → Add plugin** para acessar 
 | Operações | integrar-aplicacao, renomear-hosts, alertas |
 | Governança | backup, validar, relatorio |
 
-No Claude Code, as operações usam o prefixo de namespace "/observability:". No Codex, selecione uma das 19 operações no menu ou peça em linguagem natural; a entrada observability mantém o conhecimento contextual. No Antigravity, uma skill seleciona o procedimento por intenção.
+No Claude Code, as operações usam o prefixo de namespace "/observability:". No Codex, selecione uma das 21 operações no menu ou peça em linguagem natural; a entrada observability mantém o conhecimento contextual. No Antigravity, uma skill seleciona o procedimento por intenção.
 
 ## Desenvolvendo e publicando uma alteração
 
@@ -125,6 +125,24 @@ Licença MIT.
 
 ## Orquestração e proteção de invocação
 
-Uma única skill model-invoked (`observability`) roteia quatro especialidades e 19 procedimentos em referências. O Claude oculta essa skill do menu slash com `user-invocable: false` e mantém os 19 comandos; oito comandos de mudança exigem invocação explícita. Codex/ChatGPT mostram 19 operações nativas mais a skill contextual observability (20 entradas únicas): a flag Claude não promete ocultação nessa interface. O pacote Codex não contém comandos Claude e por isso não gera entradas `Source Command`. Antigravity usa a mesma skill e as mesmas referências.
+Uma única skill model-invoked (`observability`) roteia quatro especialidades e 21 procedimentos em referências. O Claude oculta essa skill do menu slash com `user-invocable: false` e mantém os 21 comandos; dez comandos de mudança exigem invocação explícita. Codex/ChatGPT mostram 21 operações nativas mais a skill contextual observability (22 entradas únicas): a flag Claude não promete ocultação nessa interface. O pacote Codex não contém comandos Claude e por isso não gera entradas `Source Command`. Antigravity usa a mesma skill e as mesmas referências.
 
 Cinco agentes têm prefixo observability- para evitar colisão com outros plugins. ROOT_ROUTED significa que Root coordena ferramentas; especialistas produzem análise ou CANONICAL OUTPUT; auditor verifica artefatos. Consulte docs/AGENTIC.md.
+
+## Importação de arquivos existentes
+
+- Claude: `/observability:importar-template` e `/observability:importar-dashboard`.
+- Codex: selecione `importar-template` ou `importar-dashboard` no menu.
+- Antigravity: peça para importar o arquivo no ambiente confirmado.
+
+Anexe o template Zabbix (YAML/JSON/XML) ou dashboard Grafana (JSON) e indique o
+ambiente. A skill pode conduzir a importação real pelo navegador, Computer Use
+ou API disponível, seguindo as permissões dessas ferramentas. Ela não instala
+ferramentas, não cria acesso e não contém uma conexão pré-configurada ao ambiente.
+Login/MFA ou ações restritas podem exigir sua intervenção.
+
+O agente inspeciona o arquivo e o destino, identifica conflitos e dependências,
+prepara backup/diff/rollback e executa a importação quando o escopo concreto estiver
+autorizado. Sem acesso, entrega o plano e declara BLOQUEADO. Importar um template
+não autoriza vincular hosts ou disparar testes HTTP; importar um dashboard não cria
+uma fonte de dados nem garante que haverá dados. Consulte [o procedimento](references/import-workflow.md).
