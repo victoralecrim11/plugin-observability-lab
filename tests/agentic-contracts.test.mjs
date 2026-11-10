@@ -14,28 +14,20 @@ const special=['observability-orchestrator','zabbix-engineer','grafana-engineer'
 const guarded=['alertas','atualizar-dashboard','atualizar-template','criar-dashboard','criar-template','integrar-aplicacao','monitorar-http','renomear-hosts'];
 const agents=['observability-planner','observability-quality-auditor','observability-zabbix-specialist','observability-grafana-specialist','observability-integration-specialist'];
 
-test('skills de conhecimento ocultas para usuario com invocacao por contexto preservada',()=>{
- for(const n of special){
-   const front=fm('skills/'+n+'/SKILL.md');
-   assert.match(front,/^user-invocable:\s*false$/m,n);
-   assert.doesNotMatch(front,/^disable-model-invocation:\s*true$/m,n);
- }
+test('skill roteadora model-invoked mantém conhecimento e operações fora do catálogo',()=>{
+ const front=fm('skills/observability/SKILL.md');
+ assert.match(front,/^user-invocable:\s*false$/m);
+ assert.doesNotMatch(front,/^disable-model-invocation:\s*true$/m);
+ for(const n of special)assert.ok(fs.existsSync(p('skills/observability/references/domains/'+n+'/GUIDE.md')),n);
 });
-test('comandos de alteracao exigem invocacao direta Claude',()=>{
- if(isAnti)return;
+
+test('comandos de alteração exigem invocação direta Claude; referências preservam os guardrails',()=>{
  for(const n of guarded){
-  const dir=fs.existsSync(p('commands'))?'commands':'workflows';
-  assert.match(fm(dir+'/'+n+'.md'),/^disable-model-invocation:\s*true$/m,n);
+  assert.match(fm('skills/observability/references/workflows/'+n+'.md'),/^disable-model-invocation:\s*true$/m,n);
+  if(info.platform==='claude-codex')assert.match(fm('commands/'+n+'.md'),/^disable-model-invocation:\s*true$/m,n);
  }
 });
-test('Codex ops continuam inteiras e nao invocaveis no menu quando runtime suporta flag',()=>{
- if(isAnti)return;
- const names=fs.readdirSync(p('codex-skills')).filter(n=>fs.existsSync(p('codex-skills/'+n+'/SKILL.md')));
- assert.equal(names.length,19);
- for(const n of names){
-  assert.match(fm('codex-skills/'+n+'/SKILL.md'),/^user-invocable:\s*false$/m,n);
- }
-});
+
 test('contrato ROOT_ROUTED diferencia planner, specialist e auditor e exige prova',()=>{
  const s=read('references/agentic-workflow.md');
  assert.match(s,/ROOT_ROUTED/);
@@ -58,11 +50,6 @@ test('agentes com nomes exclusivos e fronteiras de responsabilidade',()=>{
   }
  }
 });
-test('skills operacionais do Antigravity permanecem acionaveis por intencao',()=>{
- if(!isAnti)return;
- const front=fm('skills/diagnosticar/SKILL.md');
- assert.doesNotMatch(front,/^user-invocable:\s*false$/m);
-});
 test('guardrails nativos possuem trigger valido e nao sao ignorados pelo Antigravity',()=>{
  for(const filename of ['rules/security.md','rules/agentic-governance.md']){
   if(!fs.existsSync(p(filename))){if(isAnti)assert.fail('Regra ausente: '+filename);continue;}
@@ -77,7 +64,7 @@ test('pacote Antigravity nao herda arquivo MCP exclusivo Claude',()=>{
 });
 
 test('marketplace Codex mantém nome estável para atualização do cadastro existente',()=>{
- if(isAnti)return;
+ if(info.platform!=='claude-codex')return;
  const claude=JSON.parse(read('.claude-plugin/marketplace.json'));
  const codex=JSON.parse(read('.agents/plugins/marketplace.json'));
  const plugin=JSON.parse(read('.codex-plugin/plugin.json'));

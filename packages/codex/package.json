@@ -1,0 +1,17 @@
+{
+  "name": "observability-dev-toolkit",
+  "version": "0.6.0",
+  "private": true,
+  "type": "module",
+  "description": "Toolkit de observabilidade para Claude Code e Codex",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "scan": "node scripts/security-scan.mjs",
+    "validate": "node scripts/validate-package.mjs --path .",
+    "test": "node --test tests/*.test.mjs",
+    "check": "npm run scan && npm run validate && npm test"
+  },
+  "license": "MIT"
+}

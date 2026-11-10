@@ -1,0 +1,36 @@
+{
+  "name": "observability",
+  "version": "0.6.0",
+  "description": "Sustentação e engenharia de observabilidade para Zabbix 7.4.x, Grafana 12.x e integrações, priorizando auditoria e mudanças autorizadas.",
+  "author": {
+    "name": "Victor Alecrim"
+  },
+  "license": "MIT",
+  "keywords": [
+    "zabbix",
+    "grafana",
+    "observability",
+    "monitoring",
+    "prometheus",
+    "azure",
+    "sre"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Observability Dev Toolkit",
+    "shortDescription": "Audite e planeje Zabbix e Grafana com segurança.",
+    "longDescription": "Plugin integrado de observabilidade: auditoria, diagnóstico, dashboards, templates e integrações sem escrita automática em produção.",
+    "developerName": "Victor Alecrim",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Audite este dashboard Grafana sem alterar o ambiente.",
+      "Planeje a integração HTTP de uma aplicação em homologação.",
+      "Crie um dry-run de renomeação de hosts Zabbix."
+    ]
+  }
+}

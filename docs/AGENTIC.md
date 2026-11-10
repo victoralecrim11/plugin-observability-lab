@@ -13,7 +13,7 @@ Os agentes especializados têm nomes com prefixo observability- para evitar coli
 
 ## Testes
 1. npm run check na fonte; npm run build; npm run check em cada distribuição.
-2. claude plugin validate . na raiz; conferir menu sem as 4 skills de domínio.
+2. claude plugin validate . na raiz; conferir menu sem as skill contextual.
 3. agy plugin validate . e agy plugin list após instalação isolada.
 4. Smoke test de delegação apenas com dados sintéticos: agente planejador recebe cenário offline e responde com DELEGATION PLAN; auditor registra NOT EXECUTED para tudo que não foi executado.
 5. Nenhum teste implica autorização para acessar produção.

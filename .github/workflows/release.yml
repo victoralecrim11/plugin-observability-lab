@@ -1,0 +1,31 @@
+name: Publish validated release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate version and all distributions
+        run: |
+          test "$GITHUB_REF_NAME" = "v$(node -p "require('./package.json').version")"
+          npm run check
+          npm run build
+          node scripts/verify-generated.mjs
+          for platform in claude-codex codex antigravity; do
+            (cd "dist/$platform/observability" && npm run check)
+          done
+      - name: Publish release archives
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for platform in claude-codex codex antigravity; do
+            (cd "dist/$platform" && zip -qr "../../observability-$platform-$GITHUB_REF_NAME.zip" observability)
+          done
+          gh release create "$GITHUB_REF_NAME" observability-*.zip --verify-tag --title "Observability Dev Toolkit $GITHUB_REF_NAME" --notes-file "docs/RELEASE-$GITHUB_REF_NAME.md"

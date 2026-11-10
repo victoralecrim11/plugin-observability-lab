@@ -1,6 +1,6 @@
 # Observability Dev Toolkit
 
-Plugin de engenharia de observabilidade para **Claude Code + Codex**, em um único repositório. Contém 19 procedimentos operacionais, 4 skills especializadas e 5 agentes declarativos para manutenção, auditoria e troubleshooting de Zabbix/Grafana, Prometheus e integrações.
+Plugin de engenharia de observabilidade para **Claude Code + Codex**, em um único repositório. Contém 19 procedimentos operacionais, uma skill contextual com quatro especialidades e 5 agentes declarativos para manutenção, auditoria e troubleshooting de Zabbix/Grafana, Prometheus e integrações.
 
 > Os exemplos são genéricos e sintéticos. Não são distribuídas credenciais, endereços internos, configurações ou documentos de organizações.
 
@@ -76,7 +76,7 @@ Esses scripts atualizam os marketplaces configurados e o plugin Claude; não rem
     npm run check
     claude --plugin-dir .
 
-Para Codex, o mesmo clone possui o manifesto de compatibilidade em .codex-plugin/plugin.json e o catálogo .agents/plugins/marketplace.json. Verifique no catálogo do aplicativo ou com a CLI da versão instalada.
+Para Codex, o catálogo .agents/plugins/marketplace.json aponta exclusivamente para packages/codex/, um pacote gerado sem comandos Claude. Não instale a raiz Claude como pacote Codex. Verifique no catálogo do aplicativo ou com a CLI da versão instalada.
 
 Na interface Claude Desktop, abra **+ → Plugins → Add plugin** para acessar marketplaces já configurados (quando disponível). No Claude Code, use **/plugin → Errors** para diagnosticar problemas de instalação.
 
@@ -92,7 +92,7 @@ Na interface Claude Desktop, abra **+ → Plugins → Add plugin** para acessar 
 | Operações | integrar-aplicacao, renomear-hosts, alertas |
 | Governança | backup, validar, relatorio |
 
-No Claude Code, as operações usam o prefixo de namespace "/observability:". O Codex as disponibiliza como skills em codex-skills/ e skills/.
+No Claude Code, as operações usam o prefixo de namespace "/observability:". No Codex e Antigravity, peça a operação em linguagem natural: uma única skill seleciona o procedimento em suas referências.
 
 ## Desenvolvendo e publicando uma alteração
 
@@ -104,6 +104,7 @@ Requer Node.js 20+.
 Edite procedimentos em workflows/, que é a fonte canônica. Antes de publicar uma nova versão, execute o comando de release, que sincroniza automaticamente os manifestos, marketplaces e metadados:
 
     npm run release:patch
+    npm run build:sync
     npm run check
     npm run build
 
@@ -124,6 +125,6 @@ Licença MIT.
 
 ## Orquestração e proteção de invocação
 
-As quatro skills de domínio são conhecimento contextual, ocultado do menu Claude por user-invocable: false. Oito comandos com potencial de mudança exigem invocação explícita no Claude (disable-model-invocation: true). As 19 skills operacionais do Codex continuam geradas para preservar as operações, marcadas como não invocáveis manualmente quando o cliente suporta essa propriedade. Essa flag não substitui aprovação real de ferramentas.
+Uma única skill model-invoked (`observability`) roteia quatro especialidades e 19 procedimentos em referências. O Claude oculta essa skill do menu slash com `user-invocable: false` e mantém os 19 comandos; oito comandos de mudança exigem invocação explícita. Codex/ChatGPT podem mostrar a única skill no catálogo de plugins: a flag Claude não promete ocultação nessa interface. O pacote Codex não contém comandos Claude e por isso não gera entradas `Source Command`. Antigravity usa a mesma skill e as mesmas referências.
 
 Cinco agentes têm prefixo observability- para evitar colisão com outros plugins. ROOT_ROUTED significa que Root coordena ferramentas; especialistas produzem análise ou CANONICAL OUTPUT; auditor verifica artefatos. Consulte docs/AGENTIC.md.

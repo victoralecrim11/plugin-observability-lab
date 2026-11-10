@@ -57,7 +57,7 @@ Para desenvolvimento local, clone o repositório. O marketplace na raiz pode ser
 
 Nesse caso, execute o comando a partir do diretório-pai. A origem local e a origem Git podem ter o mesmo nome de marketplace; evite registrar ambas ao mesmo tempo se causarem colisão.
 
-As 4 skills de domínio vivem em skills/ e as 19 operacionais, em codex-skills/. Não espere que os slash commands Claude funcionem com o mesmo namespace no Codex.
+Uma skill contextual em skills/observability/ seleciona os 19 workflows em referencias. O marketplace Codex instala packages/codex/ sem comandos Claude; use linguagem natural.
 
 > **Mesmo nome para os dois clientes:** Claude Code e Codex cadastram o catálogo como observability-marketplace, mas mantêm registros independentes. Se o Codex foi cadastrado antes da padronização, basta atualizar o marketplace existente; não crie um segundo catálogo com outro nome.
 
@@ -86,7 +86,7 @@ Automatize os comandos de atualização disponíveis:
 
 Os scripts não apagam caches, não tentam contornar bloqueios e não executam qualquer comando Zabbix/Grafana.
 
-**Importante para mantenedores:** antes de enviar uma alteração de versão, execute `npm run release:patch` (ou `release:minor`/`release:major`), `npm run check` e `npm run build`. O script sincroniza package.json, os manifestos Claude/Codex, os dois catálogos, BUILD-INFO e metadados das skills. Depois revise e faça commit/push. Enviar commits para main sem incrementar a versão pode manter caches dos clientes apontando para uma edição anterior.
+**Importante para mantenedores:** antes de enviar uma alteração de versão, execute `npm run release:patch` (ou `release:minor`/`release:major`), `npm run build:sync`, `npm run check` e `npm run build`. O script sincroniza package.json, os manifestos Claude/Codex, os dois catálogos, BUILD-INFO e metadados das skills. Depois revise e faça commit/push. Enviar commits para main sem incrementar a versão pode manter caches dos clientes apontando para uma edição anterior.
 
 ## 4. Desinstalação
 

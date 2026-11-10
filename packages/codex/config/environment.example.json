@@ -1,0 +1,27 @@
+{
+  "environment": "HMG_OR_PRD",
+  "mode": "read-only",
+  "zabbix": {
+    "version": "7.4.x",
+    "url": "https://ZABBIX-EXEMPLO/api_jsonrpc.php"
+  },
+  "grafana": {
+    "version": "12.x",
+    "url": "https://GRAFANA-EXEMPLO",
+    "zabbixPluginObserved": "versao-a-verificar",
+    "datasources": [
+      {
+        "name": "ZABBIX_PRINCIPAL",
+        "uid": "CONFIRMAR_UID"
+      },
+      {
+        "name": "ZABBIX_SECUNDARIO",
+        "uid": "CONFIRMAR_UID"
+      }
+    ]
+  },
+  "dataHandling": {
+    "doNotStoreSecrets": true,
+    "requireApprovalForWrite": true
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "uid": "sample-demo",
+  "title": "Dashboard demonstrativo (dados sintéticos)",
+  "schemaVersion": 41,
+  "templating": {"list": [{"name": "env", "type": "custom"}]},
+  "panels": [
+    {"id": 1, "title": "Disponibilidade", "type": "stat", "datasource": {"type":"alexanderzobnin-zabbix-datasource", "uid":"SYNTH-ZBX-UID"}, "targets":[{"refId":"A","datasource":{"uid":"SYNTH-ZBX-UID"}}]},
+    {"id": 2, "title": "Latência", "type": "timeseries", "targets":[{"refId":"B","datasource":{"uid":"SYNTH-PROM-UID"}}]}
+  ]
+}

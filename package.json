@@ -1,6 +1,6 @@
 {
   "name": "observability-dev-toolkit",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "private": true,
   "type": "module",
   "description": "Toolkit de observabilidade para Claude Code e Codex",
@@ -16,7 +16,8 @@
     "verify:versions": "node scripts/bump-version.mjs --check",
     "release:patch": "node scripts/bump-version.mjs patch",
     "release:minor": "node scripts/bump-version.mjs minor",
-    "release:major": "node scripts/bump-version.mjs major"
+    "release:major": "node scripts/bump-version.mjs major",
+    "build:sync": "node scripts/build.mjs --sync"
   },
   "license": "MIT"
 }

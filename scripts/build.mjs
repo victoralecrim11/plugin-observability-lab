@@ -1,11 +1,13 @@
 #!/usr/bin/env node
 /**
  * Observability Dev Toolkit - version derived from package.json
- * One canonical source, two releases:
- *  - claude-codex: identical plugin root and shared domain skills for both runtimes
+ * One canonical source, three runtime surfaces:
+ *  - claude-codex: Claude commands plus contextual router (not the Codex installation root)
+ *  - codex: isolated package without Claude command migration
  *  - antigravity: isolated native distribution
- * Workflow markdown is the source of truth for Claude commands and Codex operational skills.
+ * Workflow markdown is the source of truth for Claude commands and contextual references.
  */
+import './sync-content.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -41,19 +43,6 @@ function common(base) {
  write(path.join(base,'.mcp.json'),{mcpServers:{}});
  for(const name of domainNames) cp(path.join(root,'skills',name),path.join(base,'skills',name));
 }
-function buildCodexOperation(base,file,subdir='codex-skills') {
- const slug = file.replace(/\.md$/,'');
- const raw = fs.readFileSync(path.join(root,'workflows',file),'utf8');
- const workflow = parseWorkflow(raw,file);
- const body = workflow.body.replace(new RegExp(`^# \\/observability:${slug}$`,'m'),`# ${slug}`);
- const invocation = subdir==='codex-skills' ? 'user-invocable: false\n' : '';
- const front = `---\nname: ${slug}\ndescription: ${workflow.description}\n${invocation}license: MIT\nmetadata:\n  version: "${version}"\n---\n\n`;
- const skillDir = path.join(base,subdir,slug);
- write(path.join(skillDir,'SKILL.md'),front+body+`\n## Documentação e segurança\n- Leia as instruções de governança em \`references/security-policy.md\` e \`references/operational-baseline.md\` neste diretório.\n- Para scripts offline, localize a pasta \`scripts/\` na raiz do plugin.\n`);
- for(const doc of ['security-policy','operational-baseline','workflow-routing']) {
-   cp(path.join(root,'references',`${doc}.md`),path.join(skillDir,'references',`${doc}.md`));
- }
-}
 function buildUnified() {
  const platform = 'claude-codex';
  const base = path.join(dist,platform,pluginName);
@@ -62,7 +51,6 @@ function buildUnified() {
  cp(path.join(root,'.agents','plugins','marketplace.json'),path.join(base,'.agents','plugins','marketplace.json'));
  for(const file of workflowNames) {
    cp(path.join(root,'workflows',file),path.join(base,'commands',file));
-   buildCodexOperation(base,file);
  }
  cp(path.join(root,'rules','AGENTS.md'),path.join(base,'AGENTS.md'));
  const manifest = {name:pluginName,displayName:'Observability Dev Toolkit',description,version,author,license:'MIT',keywords};
@@ -78,24 +66,23 @@ function buildUnified() {
  });
  write(path.join(base,'.codex-plugin','plugin.json'),{
   name:pluginName,version,description,author:{name:author.name},license:'MIT',keywords,
-  skills:['./skills/','./codex-skills/'],mcpServers:'./.mcp.json',
+  skills:'./skills/',mcpServers:'./.mcp.json',
   interface:{displayName:'Observability Dev Toolkit',shortDescription:'Audite e planeje Zabbix e Grafana com segurança.',
    longDescription:'Plugin integrado de observabilidade: auditoria, diagnóstico, dashboards, templates e integrações sem escrita automática em produção.',
    developerName:author.name,category:'Developer Tools',capabilities:['Read','Write'],
    defaultPrompt:['Audite este dashboard Grafana sem alterar o ambiente.','Planeje a integração HTTP de uma aplicação em homologação.','Crie um dry-run de renomeação de hosts Zabbix.']}
  });
  write(path.join(base,'BUILD-INFO.json'),{
-  platform,version,domainSkills:domainNames.length,commands:workflowNames.length,codexOperationalSkills:workflowNames.length,
+  platform,version,domainSkills:domainNames.length,commands:workflowNames.length,codexOperationalSkills:0,workflowReferences:workflowNames.length,
   runtime:['claude-code','codex'],sourceOfTruth:'workflows/',mode:'offline',remoteWrites:0
  });
- return {platform,path:base,skillsShared:domainNames.length,commandsClaude:workflowNames.length,skillsCodex:domainNames.length+workflowNames.length};
+ return {platform,path:base,skillsShared:domainNames.length,commandsClaude:workflowNames.length,skillsCodex:domainNames.length};
 }
 function buildAntigravity(){
  const platform='antigravity';const base=path.join(dist,platform,pluginName);
  fs.rmSync(base,{recursive:true,force:true});fs.mkdirSync(base,{recursive:true});
  common(base);
  fs.rmSync(path.join(base,'.mcp.json'),{force:true}); // Claude-only config must not ship in Antigravity
- for(const f of workflowNames)buildCodexOperation(base,f,'skills');
  cp(path.join(root,'rules'),path.join(base,'rules'));
  write(path.join(base,'plugin.json'),{name:pluginName,version,displayName:'Observability Dev Toolkit',description,author,license:'MIT',keywords,
   suggestedPrompts:['Audite o Zabbix sem modificar produção','Diagnostique um painel Grafana sem dados','Planeje o monitoramento HTTP de nova aplicação']
@@ -107,10 +94,22 @@ function buildAntigravity(){
   body=body.replace('model: inherit\n','model: inherit\nmainAgent: false\nsubagent: true\ncommandExecutionPolicy: off\ninheritMcp: false\n');
   write(dst,body);
  }
- write(path.join(base,'BUILD-INFO.json'),{platform,version,domainSkills:domainNames.length,operationalSkills:workflowNames.length,
+ write(path.join(base,'BUILD-INFO.json'),{platform,version,domainSkills:domainNames.length,operationalSkills:0,workflowReferences:workflowNames.length,
   sourceOfTruth:'workflows/',mode:'offline',remoteWrites:0});
- return {platform,path:base,skills:domainNames.length+workflowNames.length};
+ return {platform,path:base,skills:domainNames.length};
 }
 fs.mkdirSync(dist,{recursive:true});
 console.log(JSON.stringify(buildUnified()));
 console.log(JSON.stringify(buildAntigravity()));
+const codexBase=path.join(dist,'codex',pluginName);
+fs.rmSync(codexBase,{recursive:true,force:true});
+cp(path.join(dist,'claude-codex',pluginName),codexBase);
+for(const rel of ['commands','.claude-plugin','.agents']) fs.rmSync(path.join(codexBase,rel),{recursive:true,force:true});
+write(path.join(codexBase,'BUILD-INFO.json'),{platform:'codex',version,domainSkills:1,commands:0,codexOperationalSkills:0,workflowReferences:19,runtime:['codex'],sourceOfTruth:'workflows/',mode:'offline',remoteWrites:0});
+console.log(JSON.stringify({platform:'codex',path:codexBase,skills:1,commands:0}));
+if(process.argv.includes('--sync')) {
+ for(const rel of ['.claude-plugin','.codex-plugin','BUILD-INFO.json']) cp(path.join(dist,'claude-codex',pluginName,rel),path.join(root,rel));
+ const published=path.join(root,'packages','codex');
+ fs.rmSync(published,{recursive:true,force:true});
+ cp(codexBase,published);
+}

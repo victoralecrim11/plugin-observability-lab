@@ -1,9 +1,10 @@
 {
   "platform": "claude-codex",
-  "version": "0.5.1",
-  "domainSkills": 4,
+  "version": "0.6.0",
+  "domainSkills": 1,
   "commands": 19,
-  "codexOperationalSkills": 19,
+  "codexOperationalSkills": 0,
+  "workflowReferences": 19,
   "runtime": [
     "claude-code",
     "codex"

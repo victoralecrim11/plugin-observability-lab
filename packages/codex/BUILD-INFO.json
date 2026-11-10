@@ -1,0 +1,14 @@
+{
+  "platform": "codex",
+  "version": "0.6.0",
+  "domainSkills": 1,
+  "commands": 0,
+  "codexOperationalSkills": 0,
+  "workflowReferences": 19,
+  "runtime": [
+    "codex"
+  ],
+  "sourceOfTruth": "workflows/",
+  "mode": "offline",
+  "remoteWrites": 0
+}

@@ -48,7 +48,7 @@ for(const file of targets){
     write(file,obj);updates++;
   }
 }
-for(const dirName of ['skills','codex-skills']){
+for(const dirName of ['skills']){
   const base=pathAt(dirName);
   if(!fs.existsSync(base))continue;
   for(const entry of fs.readdirSync(base,{withFileTypes:true})){

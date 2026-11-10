@@ -9,7 +9,7 @@ const at=argv.indexOf('--path');
 const base=source?root:(at<0?root:path.resolve(argv[at+1]));
 const problems=[];
 const exists=rel=>fs.existsSync(path.join(base,rel));
-function list(dir){if(!fs.existsSync(dir))return[];return fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?list(path.join(dir,e.name)):[path.join(dir,e.name)]);}
+function list(dir){if(!fs.existsSync(dir))return[];return fs.readdirSync(dir,{withFileTypes:true}).filter(e=>!e.isDirectory()||!['.git','node_modules','dist','packages'].includes(e.name)).flatMap(e=>e.isDirectory()?list(path.join(dir,e.name)):[path.join(dir,e.name)]);}
 function read(rel){return fs.readFileSync(path.join(base,rel),'utf8');}
 function json(rel){try{return JSON.parse(read(rel));}catch(e){problems.push(`JSON inválido/ausente ${rel}: ${e.message}`);return null;}}
 function fm(file){const t=fs.readFileSync(file,'utf8');const m=t.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);if(!m)throw Error(`Frontmatter inexistente: ${file}`);return Object.fromEntries(m[1].split('\n').filter(x=>/^[\w-]+:/.test(x)).map(x=>{const i=x.indexOf(':');return[x.slice(0,i),x.slice(i+1).trim()] }));}
@@ -19,10 +19,14 @@ function check(){
  const codex=list(path.join(base,'codex-skills')).filter(x=>x.endsWith('SKILL.md'));
  const commands=list(path.join(base,'commands')).filter(x=>x.endsWith('.md'));
  const workflows=list(path.join(base,'workflows')).filter(x=>x.endsWith('.md'));
- const info=source?null:json('BUILD-INFO.json');
- const combined=info?.platform==='claude-codex';const anti=info?.platform==='antigravity';
- eq(domain.length,anti?23:4,'skills de domínio (incluindo operações Antigravity)');
- eq(codex.length,combined?19:0,'skills operacionais Codex');
+ const info=json('BUILD-INFO.json');
+ const combined=info?.platform==='claude-codex';const anti=info?.platform==='antigravity';const isolated=info?.platform==='codex';
+ if(!combined&&!anti&&!isolated)problems.push('Plataforma desconhecida');
+ eq(domain.length,1,'skill model-invoked única');
+ eq(codex.length,0,'skills operacionais Codex legadas');
+ if(exists('codex-skills'))problems.push('Diretório codex-skills legado');
+ for(const rel of ['.codex-plugin/migrated-command-skills','.claude-plugin/migrated-command-skills'])if(exists(rel))problems.push('Source Command migrado no pacote: '+rel);
+ if(isolated||anti)for(const rel of ['commands','.claude-plugin'])if(exists(rel))problems.push('Superfície Claude indevida: '+rel);
  eq(commands.length,combined?19:0,'comandos Claude');
  eq(workflows.length,source || (combined && exists('workflows')) ? 19 : 0,'workflows fonte');
  for(const file of [...domain,...codex]){
@@ -33,6 +37,27 @@ function check(){
   }catch(e){problems.push(e.message)}
  }
  for(const file of [...commands,...workflows])try{if(!fm(file).description)problems.push(`description ausente ${file}`)}catch(e){problems.push(e.message)};
+ const skill='skills/observability/SKILL.md';
+ if(!exists(skill))problems.push('Skill roteadora ausente');
+ else {
+  const front=fm(path.join(base,skill));
+  if(front['user-invocable']!=='false'||front['disable-model-invocation']==='true')problems.push('Skill roteadora deve ser model-invoked');
+ }
+ const refDir='skills/observability/references/workflows';
+ const refs=list(path.join(base,refDir)).filter(x=>x.endsWith('.md'));
+ eq(refs.length,19,'workflows como referências');
+ for(const name of ['observability-orchestrator','zabbix-engineer','grafana-engineer','monitoring-integrations']){
+  if(!exists('skills/observability/references/domains/'+name+'/GUIDE.md'))problems.push('Conhecimento de domínio ausente: '+name);
+ }
+ for(const f of [...commands,...workflows]){
+  const rel=refDir+'/'+path.basename(f);
+  if(!exists(rel)||fs.readFileSync(f,'utf8').replace(/\r\n/g,'\n')!==read(rel).replace(/\r\n/g,'\n'))problems.push('Workflow divergente: '+path.basename(f));
+ }
+ if(isolated){
+  const cx=json('.codex-plugin/plugin.json');
+  if(cx?.name!=='observability'||cx?.version!==info?.version)problems.push('Identidade/versão Codex divergente');
+  if(JSON.stringify(cx?.skills)!==JSON.stringify('./skills/'))problems.push('Codex deve declarar somente ./skills/');
+ }
  if(!exists('references/security-policy.md'))problems.push('Política de segurança ausente');
  for(const file of list(base).filter(x=>x.endsWith('.json')&&!x.includes('node_modules')))try{JSON.parse(fs.readFileSync(file,'utf8'))}catch(e){problems.push(`JSON inválido: ${file}`)}
  for(const file of list(base).filter(x=>/\.(md|json|mjs|yaml|yml|txt)$/.test(x)&&!x.includes('node_modules'))){
@@ -40,16 +65,9 @@ function check(){
   if(/Bearer\s+[a-z0-9_-]{25,}/i.test(t)||/\bsk-proj-[a-z0-9_-]{20,}/i.test(t))problems.push(`Possível credencial literal: ${file}`);
  }
  if(combined){
-  for(const n of ['observability-orchestrator','zabbix-engineer','grafana-engineer','monitoring-integrations']){
-    const p='skills/'+n+'/SKILL.md';
-    if(!exists(p)||fm(path.join(base,p))['user-invocable']!=='false')problems.push('Skill de conhecimento exposta no menu Claude: '+n);
-  }
   for(const n of ['alertas','atualizar-dashboard','atualizar-template','criar-dashboard','criar-template','integrar-aplicacao','monitorar-http','renomear-hosts']){
     const p='commands/'+n+'.md';
     if(!exists(p)||fm(path.join(base,p))['disable-model-invocation']!=='true')problems.push('Comando de alteracao sem invocacao manual: '+n);
-  }
-  for(const p of codex){
-    if(fm(p)['user-invocable']!=='false')problems.push('Skill operacional Codex sem restricao de menu: '+p);
   }
   const expected=['observability-planner','observability-quality-auditor','observability-zabbix-specialist','observability-grafana-specialist','observability-integration-specialist'];
   for(const n of expected)if(!exists('agents/'+n+'.md'))problems.push('Agente ausente: '+n);
@@ -64,9 +82,8 @@ function check(){
   if(codexMarket?.plugins?.[0]?.version!==cx?.version)problems.push('Versao do marketplace Codex divergente do manifesto');
   if(mcp?.mcpServers&&Object.keys(mcp.mcpServers).length!==0)problems.push('A distribuição não pode vir com MCP corporativo pré-configurado');
   const skillPaths=Array.isArray(cx?.skills)?cx.skills:[cx?.skills];
-  if(!skillPaths.includes('./skills/')||!skillPaths.includes('./codex-skills/'))problems.push('Codex não declarou os dois diretórios de skills');
+  if(skillPaths.length!==1||skillPaths[0]!=='./skills/')problems.push('Codex deve declarar somente ./skills/');
   for(const value of skillPaths){if(typeof value!=='string'||!value.startsWith('./')||value.includes('..')||!exists(value))problems.push(`Caminho de skills inválido: ${value}`)}
-  for(const f of commands){const slug=path.basename(f,'.md');if(!exists(`codex-skills/${slug}/SKILL.md`))problems.push(`Sem operação Codex correspondente a ${slug}`)}
   if(!exists('AGENTS.md'))problems.push('AGENTS.md compartilhado ausente');
  }
  if(anti){
@@ -90,7 +107,7 @@ function check(){
  }
  if(!source&&!exists('scripts/audit-dashboard.mjs'))problems.push('Scripts offline incompletos');
  if(source&&!exists('scripts/build.mjs'))problems.push('Builder não localizado');
- const result={status:problems.length?'FAIL':'PASS',mode:source?'source':info?.platform||'unrecognized',base,skills:domain.length,operationalSkills:codex.length,commands:commands.length,workflows:workflows.length,problems};
+ const result={status:problems.length?'FAIL':'PASS',mode:source?'source':info?.platform||'unrecognized',base,skills:domain.length,operationalSkills:codex.length,commands:commands.length,workflows:workflows.length,workflowReferences:refs.length,problems};
  console.log(JSON.stringify(result,null,2));if(problems.length)process.exitCode=1;
 }
 check();
